@@ -7,7 +7,8 @@ const nextConfig = {
     unoptimized: true
   },
   trailingSlash: false,
-  pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx']
+  pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
+  basePath: ''
 }
 
 const withMDX = createMDX({
