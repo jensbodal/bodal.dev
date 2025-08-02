@@ -1,0 +1,47 @@
+.hero {
+  text-align: center;
+  padding: 4rem 0;
+}
+
+.lead {
+  font-size: 1.25rem;
+  color: #666;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.sections {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 4rem;
+}
+
+.sectionCard {
+  padding: 2rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition: transform 0.2s ease;
+}
+
+.sectionCard:hover {
+  transform: translateY(-2px);
+}
+
+.sectionCard h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.sectionCard p {
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .lead,
+  .sectionCard p {
+    color: #999;
+  }
+}
