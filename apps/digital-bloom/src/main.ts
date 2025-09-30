@@ -48,11 +48,16 @@ function setupAudio() {
             const note = scales.pentatonic[Math.floor(Math.random() * scales.pentatonic.length)];
             synth.triggerAttackRelease(note, "8n", time);
         }
-    }, "4n").start(0);
+    }, "4n");
+    // Don't start the loop immediately - start it when Transport starts
+    loop.start(0);
 }
 
 function playNote(y: number) {
-    if (!synth) return;
+    if (!synth) {
+        console.warn('playNote called but synth not initialized');
+        return;
+    }
     const noteIndex = Math.min(
         scales.pentatonic.length - 1,
         Math.floor((1 - (y / window.innerHeight)) * scales.pentatonic.length)
@@ -108,27 +113,41 @@ startButton.addEventListener('click', () => {
 soundButton.addEventListener('click', async () => {
     vibrate();
 
-    // Initialize audio context and setup if not already done
-    if (Tone.context.state !== 'running') {
-        await Tone.start();
-    }
+    try {
+        // Initialize audio context if not already running
+        if (Tone.context.state !== 'running') {
+            await Tone.start();
+            console.log('Audio context started');
+        }
 
-    // Setup synth and loop if they haven't been created yet
-    if (!synth || !loop) {
-        setupAudio();
-    }
+        // Setup synth and loop on first use
+        if (!synth || !loop) {
+            setupAudio();
+            console.log('Audio synth and loop initialized');
+        }
 
-    // Toggle sound state
-    isPlayingSound = !isPlayingSound;
-    const btnSpan = soundButton.querySelector('span');
-    if (isPlayingSound) {
-        Tone.Transport.start();
-        if (btnSpan) btnSpan.textContent = '❚❚';
-        soundButton.classList.add('active');
-    } else {
-        Tone.Transport.pause();
-        if (btnSpan) btnSpan.textContent = '▶';
-        soundButton.classList.remove('active');
+        // Toggle sound state
+        isPlayingSound = !isPlayingSound;
+        const btnSpan = soundButton.querySelector('span');
+
+        if (isPlayingSound) {
+            // Start or resume the Transport
+            if (Tone.Transport.state !== 'started') {
+                Tone.Transport.start();
+                console.log('Transport started');
+            }
+            if (btnSpan) btnSpan.textContent = '❚❚';
+            soundButton.classList.add('active');
+        } else {
+            // Pause the Transport
+            Tone.Transport.pause();
+            console.log('Transport paused');
+            if (btnSpan) btnSpan.textContent = '▶';
+            soundButton.classList.remove('active');
+        }
+    } catch (error) {
+        console.error('Error initializing audio:', error);
+        isPlayingSound = false;
     }
 });
 
