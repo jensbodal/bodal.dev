@@ -29,30 +29,48 @@ let digitalBloom: DigitalBloom;
 
 // --- AUDIO SETUP ---
 let synth: Tone.PolySynth | null = null;
+let reverb: Tone.Reverb | null = null;
 let loop: Tone.Loop | null = null;
 
+// Lower octave pentatonic scale for more calming tones
 const scales = {
-    pentatonic: ["C3", "D3", "E3", "G3", "A3", "C4", "D4", "E4", "G4", "A4"]
+    pentatonic: ["C2", "D2", "E2", "G2", "A2", "C3", "D3", "E3", "G3", "A3"]
 };
 
 function setupAudio() {
-    // Create polyphonic synth with AM synthesis
-    synth = new Tone.PolySynth(Tone.AMSynth).toDestination();
+    // Create reverb for spacious, ambient sound
+    reverb = new Tone.Reverb({
+        decay: 3,      // 3 second decay
+        wet: 0.4       // 40% reverb, 60% dry signal
+    }).toDestination();
 
-    // Set audible volume (-8dB is much more audible than -18dB)
+    // Create polyphonic synth with FM synthesis (warmer, more soothing than AM)
+    synth = new Tone.PolySynth(Tone.FMSynth).connect(reverb);
+
+    // Configure soft, gentle envelope
+    synth.set({
+        envelope: {
+            attack: 0.3,    // Slow, gentle fade-in
+            decay: 0.5,     // Longer decay
+            sustain: 0.4,   // Moderate sustain
+            release: 2.0    // Long, smooth fade-out
+        }
+    });
+
+    // Set comfortable volume
     synth.volume.value = -8;
 
-    // Create loop for zen mode ambient notes
+    // Create loop for zen mode with slower tempo (half notes for more space)
     loop = new Tone.Loop(time => {
         if (zenMode && synth) {
             const note = scales.pentatonic[Math.floor(Math.random() * scales.pentatonic.length)];
             synth.triggerAttackRelease(note, "8n", time);
         }
-    }, "4n");
+    }, "2n");  // Half note = slower, more spacious
     loop.start();
 
     // Play test beep to confirm audio is working
-    synth.triggerAttackRelease("C4", "8n", Tone.now());
+    synth.triggerAttackRelease("C3", "8n", Tone.now());
     console.log('✓ Audio initialized - test beep played');
 }
 
