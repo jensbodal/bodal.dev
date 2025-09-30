@@ -107,10 +107,18 @@ startButton.addEventListener('click', () => {
 
 soundButton.addEventListener('click', async () => {
     vibrate();
+
+    // Initialize audio context and setup if not already done
     if (Tone.context.state !== 'running') {
         await Tone.start();
+    }
+
+    // Setup synth and loop if they haven't been created yet
+    if (!synth || !loop) {
         setupAudio();
     }
+
+    // Toggle sound state
     isPlayingSound = !isPlayingSound;
     const btnSpan = soundButton.querySelector('span');
     if (isPlayingSound) {
