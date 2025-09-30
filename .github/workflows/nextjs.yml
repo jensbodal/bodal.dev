@@ -57,10 +57,12 @@ jobs:
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
-      - name: Install wasm-pack
-        uses: jetli/wasm-pack-action@v0.4.0
+      - name: Setup Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
-          version: 'latest'
+          target: wasm32-unknown-unknown
+      - name: Install wasm-pack
+        run: cargo install wasm-pack
       - name: Build WASM
         run: |
           cd apps/digital-bloom/crates/digital-bloom-wasm
