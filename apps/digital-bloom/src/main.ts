@@ -36,34 +36,43 @@ const scales = {
 };
 
 function setupAudio() {
-    synth = new Tone.PolySynth(Tone.AMSynth, {
+    // Create polyphonic synth with AM synthesis
+    synth = new Tone.PolySynth(Tone.AMSynth).toDestination();
+
+    // Configure synth voice settings
+    synth.set({
         harmonicity: 1.5,
         envelope: { attack: 0.05, decay: 0.1, sustain: 0.2, release: 1 },
         modulationEnvelope: { attack: 0.5, decay: 0.01, sustain: 1, release: 0.5 }
-    }).toDestination();
-    synth.volume.value = -18;
+    });
 
+    // Set audible volume (-8dB is much more audible than -18dB)
+    synth.volume.value = -8;
+
+    // Create loop for zen mode ambient notes
     loop = new Tone.Loop(time => {
         if (zenMode && synth) {
             const note = scales.pentatonic[Math.floor(Math.random() * scales.pentatonic.length)];
             synth.triggerAttackRelease(note, "8n", time);
         }
     }, "4n");
-    // Start the loop at the next available time (not at absolute time 0)
     loop.start();
+
+    // Play test beep to confirm audio is working
+    synth.triggerAttackRelease("C4", "8n", Tone.now());
+    console.log('✓ Audio initialized - test beep played');
 }
 
 function playNote(y: number) {
-    if (!synth) {
-        console.warn('playNote called but synth not initialized');
-        return;
-    }
+    if (!synth) return;
+
     const noteIndex = Math.min(
         scales.pentatonic.length - 1,
         Math.floor((1 - (y / window.innerHeight)) * scales.pentatonic.length)
     );
     const note = scales.pentatonic[noteIndex];
-    synth.triggerAttackRelease(note, "16n", Tone.now());
+    // Use 8n (eighth note) for more audible notes
+    synth.triggerAttackRelease(note, "8n", Tone.now());
 }
 
 function vibrate(ms: number = 20) {
@@ -118,35 +127,31 @@ soundButton.addEventListener('click', async () => {
         // Initialize audio context if not already running
         if (Tone.context.state !== 'running') {
             await Tone.start();
-            console.log('Audio context started');
         }
 
-        // Setup synth and loop on first use
+        // Setup synth and loop on first use (includes test beep)
         if (!synth || !loop) {
             setupAudio();
-            console.log('Audio synth and loop initialized');
         }
 
         // Toggle sound state
         isPlayingSound = !isPlayingSound;
 
         if (isPlayingSound) {
-            // Start or resume the Transport
+            // Start Transport for zen mode loop
             if (Tone.Transport.state !== 'started') {
                 Tone.Transport.start();
-                console.log('Transport started');
             }
             if (btnSpan) btnSpan.textContent = '❚❚';
             soundButton.classList.add('active');
         } else {
-            // Pause the Transport
+            // Pause Transport
             Tone.Transport.pause();
-            console.log('Transport paused');
             if (btnSpan) btnSpan.textContent = '▶';
             soundButton.classList.remove('active');
         }
     } catch (error) {
-        console.error('Error initializing audio:', error);
+        console.error('✗ Audio initialization failed:', error);
         // Reset state and UI on error
         isPlayingSound = false;
         if (btnSpan) btnSpan.textContent = '▶';

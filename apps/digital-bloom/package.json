@@ -17,6 +17,6 @@
     "vite-plugin-wasm-pack": "^0.1.12"
   },
   "dependencies": {
-    "tone": "^14.7.77"
+    "tone": "^15.1.22"
   }
 }
