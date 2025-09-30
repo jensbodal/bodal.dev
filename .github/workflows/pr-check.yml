@@ -24,11 +24,15 @@ jobs:
         with:
           bun-version: latest
 
-      - name: Build WASM
-        uses: rustwasm/wasm-pack-action-next@v1
+      - name: Install wasm-pack
+        uses: jetli/wasm-pack-action@v0.4.0
         with:
-          path: apps/digital-bloom/crates/digital-bloom-wasm
-          target: web
+          version: 'latest'
+
+      - name: Build WASM
+        run: |
+          cd apps/digital-bloom/crates/digital-bloom-wasm
+          wasm-pack build --target web
 
       - name: Install dependencies
         run: npm ci
