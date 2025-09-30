@@ -28,46 +28,17 @@ const introOverlay = document.getElementById('introOverlay');
 const soundButton = document.getElementById('soundButton');
 const zenButton = document.getElementById('zenButton');
 const clearButton = document.getElementById('clearButton');
-const saveButton = document.getElementById('saveButton');
 const increaseBrushBtn = document.getElementById('increaseBrush');
 const decreaseBrushBtn = document.getElementById('decreaseBrush');
 const brushSizeEl = document.getElementById('brushSize');
-const toolbar = document.getElementById('toolbar');
-const toggleToolbarBtn = document.getElementById('toggleToolbar');
 
-let toolbarTimeout;
-
-function expandToolbar() {
-    toolbar.classList.add('expanded');
-    toggleToolbarBtn.classList.remove('visible-pulse');
-    clearTimeout(toolbarTimeout);
-}
-
-function collapseToolbar() {
-    // Only auto-collapse if the user isn't actively touching the controls
-    if (document.querySelector('#toolbar:hover')) return;
-    toolbarTimeout = setTimeout(() => {
-        toolbar.classList.remove('expanded');
-    }, 500);
-}
-
-toolbar.addEventListener('mouseenter', expandToolbar);
-toolbar.addEventListener('mouseleave', collapseToolbar);
-toggleToolbarBtn.addEventListener('click', () => {
-    toolbar.classList.toggle('expanded');
-    toggleToolbarBtn.classList.remove('visible-pulse');
-    clearTimeout(toolbarTimeout); // Prevent auto-collapse on click
-});
-
-startButton.addEventListener('click', () => { 
+startButton.addEventListener('click', () => {
     introOverlay.style.opacity = '0';
-    toggleToolbarBtn.classList.add('visible-pulse'); // Start pulsing after intro fades
-    setTimeout(() => introOverlay.style.display = 'none', 500); 
+    setTimeout(() => introOverlay.style.display = 'none', 500);
 });
 soundButton.addEventListener('click', async () => { if (Tone.context.state !== 'running') { await Tone.start(); setupAudio(); } isPlayingSound = !isPlayingSound; if (isPlayingSound) { Tone.Transport.start(); soundButton.textContent = '❚❚'; soundButton.classList.add('active'); } else { Tone.Transport.pause(); soundButton.textContent = '▶'; soundButton.classList.remove('active'); } });
 zenButton.addEventListener('click', () => { zenMode = !zenMode; zenButton.classList.toggle('active'); });
 clearButton.addEventListener('click', () => { digitalBloom.clear(); });
-saveButton.addEventListener('click', () => { const link = document.createElement('a'); link.download = `digital-bloom-${Date.now()}.png`; link.href = canvas.toDataURL('image/png'); link.click(); });
 function updateBrushSize(delta) { brushSize = Math.max(1, Math.min(10, brushSize + delta)); brushSizeEl.textContent = brushSize; }
 increaseBrushBtn.addEventListener('click', () => updateBrushSize(1));
 decreaseBrushBtn.addEventListener('click', () => updateBrushSize(-1));
