@@ -57,13 +57,11 @@ jobs:
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
-      - name: Setup wasm-pack
-        uses: jetli/wasm-pack-action@v0.4.0
       - name: Build WASM
-        run: |
-          cd apps/digital-bloom
-          wasm-pack build crates/digital-bloom-wasm --target web
-          cd ../..
+        uses: rustwasm/wasm-pack-action-next@v1
+        with:
+          path: apps/digital-bloom/crates/digital-bloom-wasm
+          target: web
       - name: Setup Pages
         uses: actions/configure-pages@v5
         with:
