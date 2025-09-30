@@ -49,8 +49,8 @@ function setupAudio() {
             synth.triggerAttackRelease(note, "8n", time);
         }
     }, "4n");
-    // Don't start the loop immediately - start it when Transport starts
-    loop.start(0);
+    // Start the loop at the next available time (not at absolute time 0)
+    loop.start();
 }
 
 function playNote(y: number) {
@@ -112,6 +112,7 @@ startButton.addEventListener('click', () => {
 
 soundButton.addEventListener('click', async () => {
     vibrate();
+    const btnSpan = soundButton.querySelector('span');
 
     try {
         // Initialize audio context if not already running
@@ -128,7 +129,6 @@ soundButton.addEventListener('click', async () => {
 
         // Toggle sound state
         isPlayingSound = !isPlayingSound;
-        const btnSpan = soundButton.querySelector('span');
 
         if (isPlayingSound) {
             // Start or resume the Transport
@@ -147,7 +147,10 @@ soundButton.addEventListener('click', async () => {
         }
     } catch (error) {
         console.error('Error initializing audio:', error);
+        // Reset state and UI on error
         isPlayingSound = false;
+        if (btnSpan) btnSpan.textContent = '▶';
+        soundButton.classList.remove('active');
     }
 });
 
