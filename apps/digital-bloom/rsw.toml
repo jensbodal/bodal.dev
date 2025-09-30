@@ -1,0 +1,9 @@
+cli = "npm"
+
+[new]
+using = "wasm-pack"
+
+[[crates]]
+name = "digital-bloom-wasm"
+path = "crates/digital-bloom-wasm"
+link = true

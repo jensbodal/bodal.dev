@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(npm install:*)",
-      "Bash(npx tailwindcss init:*)"
+      "Bash(npx tailwindcss init:*)",
+      "Read(//Users/jensbodal/git/neon-canvas/gemini/**)",
+      "Bash(bun run:*)"
     ],
     "deny": []
   }

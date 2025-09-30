@@ -101,10 +101,11 @@ export default function TerminalComponent() {
       switch (command) {
         case 'help':
           term.writeln('\x1b[1;33mAvailable commands:\x1b[0m');
-          term.writeln('  \x1b[36mhelp\x1b[0m     - Show this help message');
-          term.writeln('  \x1b[36mclear\x1b[0m    - Clear the terminal');
-          term.writeln('  \x1b[36mdate\x1b[0m     - Show current date and time');
-          term.writeln('  \x1b[36mecho\x1b[0m     - Echo back your message');
+          term.writeln('  \x1b[36mhelp\x1b[0m            - Show this help message');
+          term.writeln('  \x1b[36mclear\x1b[0m           - Clear the terminal');
+          term.writeln('  \x1b[36mdate\x1b[0m            - Show current date and time');
+          term.writeln('  \x1b[36mecho\x1b[0m            - Echo back your message');
+          term.writeln('  \x1b[36mdigital-bloom\x1b[0m   - Launch interactive art playground');
           break;
         
         case 'clear':
@@ -120,11 +121,19 @@ export default function TerminalComponent() {
             term.writeln(args.slice(1).join(' '));
           }
           break;
-        
+
+        case 'digital-bloom':
+          term.writeln('\x1b[1;35m✨ Launching Digital Bloom...\x1b[0m');
+          term.writeln('\x1b[1;32mOpening interactive art playground in new window\x1b[0m');
+          setTimeout(() => {
+            window.open('/digital-bloom', '_blank');
+          }, 500);
+          break;
+
         case '':
           // Empty command, do nothing
           break;
-        
+
         default:
           if (command) {
             term.writeln(`\x1b[1;31mCommand not found:\x1b[0m ${command}`);

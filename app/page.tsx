@@ -27,10 +27,9 @@ export default function HomePage() {
             BODAL.DEV
           </h1>
           <p className="text-2xl md:text-3xl text-gray-300 mb-8 max-w-3xl mx-auto">
-            <span className="text-neon-blue">Where</span>{' '}
-            <span className="text-neon-pink glow-text">human creativity</span>{' '}
-            <span className="text-neon-blue">meets</span>{' '}
-            <span className="text-neon-green glow-text">AI capability</span>
+            <span className="text-neon-pink glow-text">give me a tool</span>{', '}
+            <span className="text-neon-blue">and</span>{' '}
+            <span className="text-neon-green glow-text">i can use it</span>{'.'}
           </p>
           <div className="flex items-center justify-center gap-4 text-lg">
             <span className="px-4 py-2 border border-neon-purple/50 rounded-full text-neon-purple">
