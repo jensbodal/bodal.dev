@@ -36,15 +36,14 @@ const scales = {
 };
 
 function setupAudio() {
-    // Create polyphonic synth with AM synthesis
-    synth = new Tone.PolySynth(Tone.AMSynth).toDestination();
-
-    // Configure synth voice settings
-    synth.set({
-        harmonicity: 1.5,
-        envelope: { attack: 0.05, decay: 0.1, sustain: 0.2, release: 1 },
-        modulationEnvelope: { attack: 0.5, decay: 0.01, sustain: 1, release: 0.5 }
-    });
+    // Create polyphonic synth with AM synthesis and configure voices
+    synth = new Tone.PolySynth(Tone.AMSynth, {
+        options: {
+            harmonicity: 1.5,
+            envelope: { attack: 0.05, decay: 0.1, sustain: 0.2, release: 1 },
+            modulationEnvelope: { attack: 0.5, decay: 0.01, sustain: 1, release: 0.5 }
+        }
+    }).toDestination();
 
     // Set audible volume (-8dB is much more audible than -18dB)
     synth.volume.value = -8;
