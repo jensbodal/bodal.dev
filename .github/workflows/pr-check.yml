@@ -24,11 +24,14 @@ jobs:
         with:
           bun-version: latest
 
-      - name: Setup Rust
-        uses: actions-rust-lang/setup-rust-toolchain@v1
+      - name: Setup wasm-pack
+        uses: jetli/wasm-pack-action@v0.4.0
 
-      - name: Install wasm-pack
-        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+      - name: Build WASM
+        run: |
+          cd apps/digital-bloom
+          wasm-pack build crates/digital-bloom-wasm --target web
+          cd ../..
 
       - name: Install dependencies
         run: npm ci
