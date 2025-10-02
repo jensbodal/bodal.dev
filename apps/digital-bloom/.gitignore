@@ -37,3 +37,27 @@ yarn-error.log*
 .env
 .env.local
 .env.*.local
+
+# iOS / Capacitor
+ios/App/Pods/
+ios/App/App.xcodeproj/xcuserdata/
+ios/App/App.xcodeproj/project.xcworkspace/xcuserdata/
+ios/App/App.xcworkspace/xcuserdata/
+ios/DerivedData/
+ios/build/
+*.xcarchive
+*.ipa
+*.dSYM
+*.app
+
+# Xcode
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.pbxuser
+xcuserdata/
+
+# CocoaPods
+Pods/
+!Podfile
+!Podfile.lock

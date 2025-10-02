@@ -150,3 +150,103 @@ canvas {
         transform: translate(-50%, -50%) scale(1);
     }
 }
+
+/* --- Volume Controls --- */
+#volumeIcon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#volumeIcon:active {
+    transform: scale(0.9);
+}
+
+#volumeIcon svg {
+    transition: all 0.2s ease;
+}
+
+.volume-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    outline: none;
+    transition: background 0.2s;
+}
+
+.volume-slider:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: #00ffff;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    transition: all 0.2s;
+}
+
+.volume-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+}
+
+.volume-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background: #00ffff;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    transition: all 0.2s;
+}
+
+.volume-slider::-moz-range-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+}
+
+/* --- Landscape Mode Optimizations --- */
+@media (orientation: landscape) and (max-height: 500px) {
+    #toolbar-container {
+        padding-top: calc(0.25rem + env(safe-area-inset-top));
+    }
+
+    .mode-button {
+        width: 48px;
+        height: 48px;
+    }
+
+    .mode-button.active {
+        width: 60px;
+    }
+
+    .mode-button svg {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+/* --- Zen Mode Animation --- */
+.control-button.active {
+    animation: zen-breathe 4s ease-in-out infinite;
+}
+
+@keyframes zen-breathe {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+    }
+}

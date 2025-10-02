@@ -26,64 +26,159 @@ let currentMode: PhysicsMode = 'vine';
 let selectedColorIndex = 0;
 let lastPos: Point = { x: 0, y: 0 };
 let digitalBloom: DigitalBloom;
+let masterVolume = 0.7; // Volume control (0.0 - 1.0)
+let isMuted = true; // Start muted
+let audioInitialized = false;
 
 // --- AUDIO SETUP ---
-let synth: Tone.PolySynth | null = null;
+let ambientDrone: Tone.PolySynth | null = null;
+let bellSynth: Tone.Synth | null = null;
+let padSynth: Tone.Synth | null = null;
+let ambientLoop: Tone.Loop | null = null;
 let reverb: Tone.Reverb | null = null;
-let loop: Tone.Loop | null = null;
+let masterGain: Tone.Gain | null = null;
 
-// Lower octave pentatonic scale for more calming tones
-const scales = {
-    pentatonic: ["C2", "D2", "E2", "G2", "A2", "C3", "D3", "E3", "G3", "A3"]
-};
+const bellNotes = ["C3", "D3", "E3", "G3", "A3", "C4", "E4"]; // Pentatonic scale
 
-function setupAudio() {
-    // Create reverb for spacious, ambient sound
-    reverb = new Tone.Reverb({
-        decay: 3,      // 3 second decay
-        wet: 0.4       // 40% reverb, 60% dry signal
-    }).toDestination();
+async function setupAudio() {
+    if (audioInitialized) {
+        console.log('[Audio] Already initialized, skipping');
+        return;
+    }
 
-    // Create polyphonic synth with FM synthesis (warmer, more soothing than AM)
-    synth = new Tone.PolySynth(Tone.FMSynth).connect(reverb);
+    try {
+        console.log('[Audio] Starting initialization...');
+        console.log('[Audio] Tone.context.state:', Tone.context.state);
 
-    // Configure soft, gentle envelope
-    synth.set({
-        envelope: {
-            attack: 0.3,    // Slow, gentle fade-in
-            decay: 0.5,     // Longer decay
-            sustain: 0.4,   // Moderate sustain
-            release: 2.0    // Long, smooth fade-out
+        // iOS 16.4+: Set web audio session type to 'playback' for silent mode support
+        // This is required for WKWebView which has its own separate audio session
+        if ('audioSession' in navigator) {
+            try {
+                (navigator as any).audioSession.type = 'playback';
+                console.log('[Audio] Set navigator.audioSession.type to "playback" for iOS silent mode');
+            } catch (e) {
+                console.log('[Audio] Could not set audioSession.type:', e);
+            }
+        } else {
+            console.log('[Audio] navigator.audioSession not available (pre-iOS 16.4 or not iOS)');
         }
-    });
 
-    // Set comfortable volume
-    synth.volume.value = -8;
+        // Create master gain for overall volume control (increased for iOS)
+        masterGain = new Tone.Gain(1.5).toDestination();
+        console.log('[Audio] Master gain created');
 
-    // Create loop for zen mode with slower tempo (half notes for more space)
-    loop = new Tone.Loop(time => {
-        if (zenMode && synth) {
-            const note = scales.pentatonic[Math.floor(Math.random() * scales.pentatonic.length)];
-            synth.triggerAttackRelease(note, "8n", time);
-        }
-    }, "2n");  // Half note = slower, more spacious
-    loop.start();
+        // Create reverb for ambient space
+        reverb = new Tone.Reverb({
+            decay: 6,
+            preDelay: 0.05
+        }).connect(masterGain);
+        console.log('[Audio] Reverb created, generating...');
 
-    // Play test beep to confirm audio is working
-    synth.triggerAttackRelease("C3", "8n", Tone.now());
-    console.log('✓ Audio initialized - test beep played');
+        // Wait for reverb to be ready
+        await reverb.generate();
+        console.log('[Audio] Reverb generated successfully');
+
+        // iOS: Add small delay to ensure reverb is fully ready
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        // Ambient drone layer (continuous background)
+        ambientDrone = new Tone.PolySynth(Tone.FMSynth, {
+            harmonicity: 3,
+            modulationIndex: 10,
+            envelope: { attack: 4, decay: 2, sustain: 0.8, release: 8 },
+            modulation: { type: 'sine' },
+            modulationEnvelope: { attack: 2, decay: 0, sustain: 1, release: 4 }
+        }).connect(reverb);
+        ambientDrone.volume.value = -8; // Increased from -12
+
+        // Pad layer for depth
+        padSynth = new Tone.Synth({
+            oscillator: { type: 'sine' },
+            envelope: { attack: 3, decay: 1, sustain: 0.7, release: 6 }
+        }).connect(reverb);
+        padSynth.volume.value = -10; // Increased from -14
+
+        // Singing bowl / bell tone using FMSynth for smooth, resonant sound
+        bellSynth = new Tone.Synth({
+            oscillator: {
+                type: 'fmsine',
+                modulationType: 'sine',
+                modulationIndex: 2,
+                harmonicity: 2.5
+            },
+            envelope: {
+                attack: 0.02,
+                decay: 1.2,
+                sustain: 0.15,
+                release: 3.5
+            }
+        }).connect(reverb);
+        bellSynth.volume.value = -3; // Increased from -6
+
+        console.log('[Audio] All synths created');
+
+        // Ambient loop - plays drone and pad notes slowly
+        ambientLoop = new Tone.Loop(time => {
+            if (ambientDrone && isPlayingSound) {
+                // Play subtle drone chord progression
+                const droneNotes = [["C2", "G2", "C3"], ["D2", "A2", "D3"], ["G2", "D3", "G3"]];
+                const chordIndex = Math.floor(Math.random() * droneNotes.length);
+                ambientDrone.triggerAttackRelease(droneNotes[chordIndex], "2n", time);
+            }
+            if (padSynth && isPlayingSound && Math.random() > 0.7) {
+                // Occasionally add pad notes
+                const padNotes = ["C4", "E4", "G4", "A4"];
+                const note = padNotes[Math.floor(Math.random() * padNotes.length)];
+                padSynth.triggerAttackRelease(note, "4n", time);
+            }
+        }, "2n").start(0); // Slower interval for ambient feel
+
+        audioInitialized = true;
+        console.log('[Audio] Initialization complete');
+
+        // Show success feedback
+        showAudioFeedback('🔊 Audio ready', 2000);
+    } catch (error) {
+        console.error('[Audio] Initialization failed:', error);
+        audioInitialized = false;
+        showAudioFeedback('⚠️ Audio failed - check console', 3000);
+        throw error;
+    }
 }
 
-function playNote(y: number) {
-    if (!synth) return;
+function showAudioFeedback(message: string, duration: number) {
+    const audioFeedback = document.getElementById('audioFeedback');
+    if (!audioFeedback) return;
+    audioFeedback.textContent = message;
+    audioFeedback.style.opacity = '1';
+    setTimeout(() => {
+        audioFeedback.style.opacity = '0';
+    }, duration);
+}
+
+function playChime(y: number) {
+    if (!bellSynth) {
+        console.log('[Audio] Bell synth not initialized');
+        return;
+    }
+
+    // iOS: Ensure context is running before playing
+    if (Tone.context.state !== 'running') {
+        console.log('[Audio] Context not running, skipping chime');
+        return;
+    }
 
     const noteIndex = Math.min(
-        scales.pentatonic.length - 1,
-        Math.floor((1 - (y / window.innerHeight)) * scales.pentatonic.length)
+        bellNotes.length - 1,
+        Math.floor((1 - (y / window.innerHeight)) * bellNotes.length)
     );
-    const note = scales.pentatonic[noteIndex];
-    // Use 8n (eighth note) for more audible notes
-    synth.triggerAttackRelease(note, "8n", Tone.now());
+    const note = bellNotes[noteIndex];
+
+    try {
+        bellSynth.triggerAttackRelease(note, "1.5n", Tone.now()); // iOS: Use explicit timing
+    } catch (error) {
+        console.error('[Audio] Error playing chime:', error);
+    }
 }
 
 function vibrate(ms: number = 20) {
@@ -105,6 +200,8 @@ const decreaseBrushBtn = document.getElementById('decreaseBrush')!;
 const brushSizeEl = document.getElementById('brushSize')!;
 const physicsIndicator = document.getElementById('physicsIndicator')!;
 const modeButtons = document.querySelectorAll('.mode-button');
+const volumeSlider = document.getElementById('volumeSlider') as HTMLInputElement;
+const volumeIcon = document.getElementById('volumeIcon')!;
 
 function showPhysicsIndicator(icon: string) {
     physicsIndicator.innerHTML = icon.startsWith('<svg') ? icon : `<span>${icon}</span>`;
@@ -132,41 +229,80 @@ startButton.addEventListener('click', () => {
 
 soundButton.addEventListener('click', async () => {
     vibrate();
-    const btnSpan = soundButton.querySelector('span');
 
     try {
-        // Initialize audio context if not already running
-        if (Tone.context.state !== 'running') {
-            await Tone.start();
-        }
-
-        // Setup synth and loop on first use (includes test beep)
-        if (!synth || !loop) {
-            setupAudio();
-        }
-
-        // Toggle sound state
-        isPlayingSound = !isPlayingSound;
-
-        if (isPlayingSound) {
-            // Start Transport for zen mode loop
-            if (Tone.Transport.state !== 'started') {
-                Tone.Transport.start();
+        // iOS 16.4+: Set audio session type FIRST for silent mode support
+        if ('audioSession' in navigator) {
+            try {
+                (navigator as any).audioSession.type = 'playback';
+                console.log('[Audio] Set navigator.audioSession.type to "playback" for iOS silent mode');
+            } catch (e) {
+                console.log('[Audio] Could not set audioSession.type:', e);
             }
-            if (btnSpan) btnSpan.textContent = '❚❚';
-            soundButton.classList.add('active');
-        } else {
-            // Pause Transport
+        }
+
+        // iOS: Ensure audio context is started
+        if (Tone.context.state !== 'running') {
+            console.log('[Audio] Starting Tone.js context...');
+            await Tone.start();
+            console.log('[Audio] Tone.js context started, state:', Tone.context.state);
+        }
+
+        // iOS: Explicitly resume if suspended
+        if (Tone.context.state === 'suspended') {
+            console.log('[Audio] Context suspended, resuming...');
+            await Tone.context.resume();
+        }
+
+        // Initialize audio if not already done
+        if (!audioInitialized) {
+            console.log('[Audio] Setting up audio...');
+            await setupAudio();
+            console.log('[Audio] Setup complete');
+        }
+
+        const btnSpan = soundButton.querySelector('span');
+
+        // Check current state: if currently playing, then pause and mute
+        // If currently paused, then play and unmute
+        if (isPlayingSound) {
+            // Currently playing → pause and mute
+            console.log('[Audio] Muting and pausing transport...');
+            isPlayingSound = false;
+            isMuted = true;
+            updateVolume();
+            updateVolumeIcon();
+
             Tone.Transport.pause();
             if (btnSpan) btnSpan.textContent = '▶';
             soundButton.classList.remove('active');
+            soundButton.setAttribute('title', 'Ambient Sound Off');
+        } else {
+            // Currently paused → play and unmute
+            console.log('[Audio] Unmuting and starting transport...');
+            isPlayingSound = true;
+            isMuted = false;
+            updateVolume();
+            updateVolumeIcon();
+
+            // Play test tone FIRST (must be synchronous with user gesture on iOS)
+            if (bellSynth) {
+                console.log('[Audio] Playing test bell tone...');
+                bellSynth.triggerAttackRelease("C4", "0.3n", Tone.now());
+                console.log('[Audio] Test tone triggered');
+            }
+
+            // Then start transport with explicit timing
+            Tone.Transport.start('+0.1');
+            console.log('[Audio] Transport started at', Tone.Transport.state);
+
+            if (btnSpan) btnSpan.textContent = '❚❚';
+            soundButton.classList.add('active');
+            soundButton.setAttribute('title', 'Ambient Sound On');
         }
     } catch (error) {
-        console.error('✗ Audio initialization failed:', error);
-        // Reset state and UI on error
-        isPlayingSound = false;
-        if (btnSpan) btnSpan.textContent = '▶';
-        soundButton.classList.remove('active');
+        console.error('[Audio] Error in sound button handler:', error);
+        alert('Audio initialization failed. Check console for details.');
     }
 });
 
@@ -195,6 +331,57 @@ decreaseBrushBtn.addEventListener('click', () => {
     vibrate();
     updateBrushSize(-1);
 });
+
+volumeSlider.addEventListener('input', (e) => {
+    const newValue = parseFloat((e.target as HTMLInputElement).value);
+    if (newValue > 0 && isMuted) {
+        isMuted = false;
+    }
+    masterVolume = newValue;
+    updateVolume();
+    updateVolumeIcon();
+});
+
+volumeIcon.addEventListener('click', () => {
+    vibrate();
+    isMuted = !isMuted;
+    updateVolume();
+    updateVolumeIcon();
+});
+
+function updateVolume() {
+    const effectiveVolume = isMuted ? 0 : masterVolume;
+
+    if (ambientDrone) ambientDrone.volume.value = -8 + (effectiveVolume * 12);
+    if (padSynth) padSynth.volume.value = -10 + (effectiveVolume * 12);
+    if (bellSynth) bellSynth.volume.value = -3 + (effectiveVolume * 6);
+    if (masterGain) masterGain.gain.value = isMuted ? 0 : (1.0 + (masterVolume * 0.5));
+
+    console.log('[Audio] Volume updated:', { masterVolume, effectiveVolume, isMuted, gain: masterGain?.gain.value });
+}
+
+function updateVolumeIcon() {
+    const iconSvg = volumeIcon.querySelector('svg');
+    if (!iconSvg) return;
+
+    if (isMuted || masterVolume === 0) {
+        iconSvg.innerHTML = '<path d="M11 5L6 9H2v6h4l5 4V5zM22 9l-6 6m0-6l6 6"/>';
+        iconSvg.classList.add('text-red-400');
+        iconSvg.classList.remove('text-cyan-400');
+    } else if (masterVolume < 0.33) {
+        iconSvg.innerHTML = '<path d="M11 5L6 9H2v6h4l5 4V5zm11.07 8a4.5 4.5 0 0 0 0-2"/>';
+        iconSvg.classList.remove('text-red-400');
+        iconSvg.classList.add('text-cyan-400');
+    } else if (masterVolume < 0.66) {
+        iconSvg.innerHTML = '<path d="M11 5L6 9H2v6h4l5 4V5zm11.07 8a4.5 4.5 0 0 0 0-2m-2.12-2.12a7 7 0 0 1 0 6.24"/>';
+        iconSvg.classList.remove('text-red-400');
+        iconSvg.classList.add('text-cyan-400');
+    } else {
+        iconSvg.innerHTML = '<path d="M11 5L6 9H2v6h4l5 4V5zm11.07 8a4.5 4.5 0 0 0 0-2m-2.12-2.12a7 7 0 0 1 0 6.24m-2.12-2.12a3.5 3.5 0 0 1 0-2"/>';
+        iconSvg.classList.remove('text-red-400');
+        iconSvg.classList.add('text-cyan-400');
+    }
+}
 
 // --- CANVAS & DRAWING LOGIC ---
 function resizeCanvas() {
@@ -226,7 +413,7 @@ function handleDrawStart(e: MouseEvent | TouchEvent) {
 }
 
 function handleDraw(x: number, y: number) {
-    if (isPlayingSound && currentMode !== 'vortex' && currentMode !== 'lightning') playNote(y);
+    if (currentMode !== 'vortex' && currentMode !== 'lightning') playChime(y);
 
     switch(currentMode) {
         case 'vine':
@@ -366,10 +553,10 @@ function drawLightning(lightning: Lightning) {
 }
 
 function animate() {
-    ctx.fillStyle = 'rgba(10, 10, 10, 0.12)';
+    ctx.fillStyle = 'rgba(26, 26, 36, 0.08)'; // Softer, slower fade for dreamy trails
     ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
 
-    if (zenMode && Math.random() < 0.015) {
+    if (zenMode && Math.random() < 0.008) { // Slower, more meditative spawn rate
         handleDraw(
             Math.random() * window.innerWidth,
             Math.random() * window.innerHeight
@@ -411,15 +598,57 @@ function animate() {
 
 // --- INITIALIZATION ---
 async function run() {
-    // Initialize PWA features
-    initPWA();
+    try {
+        console.log('Initializing Digital Bloom...');
 
-    // Initialize WASM module with explicit path
-    // The WASM file is in the assets folder relative to the base path
-    await init('/digital-bloom/assets/digital_bloom_wasm_bg.wasm');
-    digitalBloom = new DigitalBloom();
-    resizeCanvas();
-    animate();
+        // Initialize PWA features
+        initPWA();
+
+        // Initialize WASM module with explicit path
+        // The WASM file is in the assets folder relative to the base path
+        console.log('Loading WASM module...');
+        await init('/digital-bloom/assets/digital_bloom_wasm_bg.wasm');
+        console.log('WASM loaded successfully');
+
+        digitalBloom = new DigitalBloom();
+        console.log('DigitalBloom instance created');
+
+        resizeCanvas();
+        animate();
+        console.log('Animation started');
+
+        // Initialize audio on startup (muted)
+        try {
+            await setupAudio();
+            updateVolume(); // Apply muted state
+            updateVolumeIcon(); // Update icon to show muted
+            console.log('Audio initialized (muted)');
+        } catch (error) {
+            console.error('Audio initialization failed:', error);
+            // Don't block app if audio fails
+        }
+    } catch (error) {
+        console.error('Initialization failed:', error);
+
+        // Show error on screen for iOS debugging
+        document.body.innerHTML = `
+            <div style="padding: 20px; color: white; font-family: monospace; background: #1a1a24;">
+                <h2 style="color: #ff6b6b;">Initialization Error</h2>
+                <pre style="background: #2a2a34; padding: 10px; border-radius: 5px; overflow-x: auto;">${error instanceof Error ? error.stack : String(error)}</pre>
+            </div>
+        `;
+    }
 }
+
+// Global error handler for iOS debugging
+window.addEventListener('error', (e) => {
+    console.error('Global error:', e.error);
+    document.body.innerHTML = `
+        <div style="padding: 20px; color: white; font-family: monospace; background: #1a1a24;">
+            <h2 style="color: #ff6b6b;">Runtime Error</h2>
+            <pre style="background: #2a2a34; padding: 10px; border-radius: 5px; overflow-x: auto;">${e.error?.stack || e.message}</pre>
+        </div>
+    `;
+});
 
 run();
