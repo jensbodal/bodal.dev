@@ -16,7 +16,7 @@ ENV PATH="/root/.cargo/bin:${PATH}"
 WORKDIR /app
 
 # Copy package files
-COPY package.json bun.lockb ./
+COPY package.json package-lock.json ./
 COPY rsw.toml ./
 
 # Copy Rust WASM crate
@@ -26,10 +26,8 @@ COPY crates ./crates
 COPY src ./src
 COPY public ./public
 COPY index.html ./
-COPY vite.config.ts ./
+COPY vite.config.js ./
 COPY tsconfig.json ./
-COPY tailwind.config.cjs ./
-COPY postcss.config.cjs ./
 
 # Install dependencies
 RUN bun install
