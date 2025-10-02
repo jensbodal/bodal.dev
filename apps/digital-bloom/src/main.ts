@@ -605,9 +605,17 @@ async function run() {
         initPWA();
 
         // Initialize WASM module
-        // The WASM file will be resolved automatically by the bundler
+        // Use fetch to load WASM explicitly for iOS/Capacitor compatibility
         console.log('Loading WASM module...');
-        await init();
+        const wasmPath = './assets/digital_bloom_wasm_bg.wasm';
+        console.log('Fetching WASM from:', wasmPath);
+        const wasmResponse = await fetch(wasmPath);
+        if (!wasmResponse.ok) {
+            throw new Error(`Failed to fetch WASM: ${wasmResponse.status} ${wasmResponse.statusText}`);
+        }
+        const wasmBuffer = await wasmResponse.arrayBuffer();
+        console.log('WASM fetched, size:', wasmBuffer.byteLength, 'bytes');
+        await init(wasmBuffer);
         console.log('WASM loaded successfully');
 
         digitalBloom = new DigitalBloom();
