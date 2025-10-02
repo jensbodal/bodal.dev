@@ -604,10 +604,10 @@ async function run() {
         // Initialize PWA features
         initPWA();
 
-        // Initialize WASM module with explicit path
-        // The WASM file is in the assets folder relative to the base path
+        // Initialize WASM module
+        // The WASM file will be resolved automatically by the bundler
         console.log('Loading WASM module...');
-        await init('/digital-bloom/assets/digital_bloom_wasm_bg.wasm');
+        await init();
         console.log('WASM loaded successfully');
 
         digitalBloom = new DigitalBloom();
@@ -631,10 +631,14 @@ async function run() {
         console.error('Initialization failed:', error);
 
         // Show error on screen for iOS debugging
+        const errorMessage = error instanceof Error
+            ? (error.stack || error.message || error.toString())
+            : (error !== null && error !== undefined ? String(error) : 'Unknown error occurred');
+
         document.body.innerHTML = `
             <div style="padding: 20px; color: white; font-family: monospace; background: #1a1a24;">
                 <h2 style="color: #ff6b6b;">Initialization Error</h2>
-                <pre style="background: #2a2a34; padding: 10px; border-radius: 5px; overflow-x: auto;">${error instanceof Error ? error.stack : String(error)}</pre>
+                <pre style="background: #2a2a34; padding: 10px; border-radius: 5px; overflow-x: auto; white-space: pre-wrap;">${errorMessage}</pre>
             </div>
         `;
     }
