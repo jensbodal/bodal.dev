@@ -1,0 +1,100 @@
+name: Test Digital Bloom Build
+
+on:
+  pull_request:
+    paths:
+      - 'apps/digital-bloom/**'
+      - '.github/workflows/test-digital-bloom.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/digital-bloom/**'
+
+jobs:
+  test-web-build:
+    name: Test Web Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Cache Cargo registry
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-registry-
+
+      - name: Cache Cargo index
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/git
+          key: ${{ runner.os }}-cargo-index-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-index-
+
+      - name: Cache wasm-pack
+        id: cache-wasm-pack
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin/wasm-pack
+          key: ${{ runner.os }}-wasm-pack
+
+      - name: Install wasm-pack
+        if: steps.cache-wasm-pack.outputs.cache-hit != 'true'
+        run: cargo install wasm-pack --locked
+
+      - name: Install dependencies
+        working-directory: apps/digital-bloom
+        run: bun install
+
+      - name: Build digital-bloom
+        working-directory: apps/digital-bloom
+        run: bun run build
+
+      - name: Verify WASM artifact
+        run: |
+          if [ ! -f apps/digital-bloom/dist/assets/digital_bloom_wasm_bg.wasm ]; then
+            echo "❌ WASM file not found"
+            exit 1
+          fi
+          echo "✅ WASM file found"
+
+      - name: Verify index.html
+        run: |
+          if [ ! -f apps/digital-bloom/dist/index.html ]; then
+            echo "❌ index.html not found"
+            exit 1
+          fi
+          echo "✅ index.html found"
+
+      - name: Check bundle size
+        run: |
+          WASM_SIZE=$(stat -c%s apps/digital-bloom/dist/assets/digital_bloom_wasm_bg.wasm)
+          echo "📦 WASM size: $(($WASM_SIZE / 1024)) KB"
+
+          JS_SIZE=$(du -b apps/digital-bloom/dist/assets/*.js | awk '{sum+=$1} END {print sum}')
+          echo "📦 JS size: $(($JS_SIZE / 1024)) KB"
+
+          TOTAL_SIZE=$(du -sb apps/digital-bloom/dist | awk '{print $1}')
+          echo "📦 Total dist size: $(($TOTAL_SIZE / 1024)) KB"
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: digital-bloom-build
+          path: apps/digital-bloom/dist
+          retention-days: 7

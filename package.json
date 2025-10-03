@@ -10,7 +10,13 @@
     "start": "npx serve@latest out",
     "lint": "next lint",
     "export": "next build",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "digital-bloom:dev": "cd apps/digital-bloom && bun run dev",
+    "digital-bloom:ios:build": "cd apps/digital-bloom && bun run ios:build",
+    "digital-bloom:ios:open": "cd apps/digital-bloom && bun run ios:open",
+    "digital-bloom:ios:test": "cd apps/digital-bloom && bash scripts/ios-integration-test.sh",
+    "digital-bloom:ios:run": "cd apps/digital-bloom && bun run cap:run:ios",
+    "digital-bloom:docker:test": "cd apps/digital-bloom && bash scripts/test-docker-build.sh"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.0",

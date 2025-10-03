@@ -1,0 +1,55 @@
+# Docker test container for digital-bloom web build
+# Mirrors production build environment for local testing
+
+FROM oven/bun:1.1-debian AS builder
+
+# Install Rust and wasm-pack for WASM compilation
+RUN apt-get update && apt-get install -y \
+    curl \
+    build-essential \
+    && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y \
+    && . $HOME/.cargo/env \
+    && cargo install wasm-pack
+
+ENV PATH="/root/.cargo/bin:${PATH}"
+
+WORKDIR /app
+
+# Copy package files
+COPY package.json package-lock.json ./
+COPY rsw.toml ./
+
+# Copy Rust WASM crate
+COPY crates ./crates
+
+# Copy source files
+COPY src ./src
+COPY public ./public
+COPY index.html ./
+COPY vite.config.js ./
+COPY tsconfig.json ./
+
+# Install dependencies
+RUN bun install
+
+# Build application (includes WASM compilation)
+RUN bun run build
+
+# Verify build artifacts exist
+RUN test -f dist/index.html || (echo "Build failed: dist/index.html not found" && exit 1)
+RUN test -f dist/assets/digital_bloom_wasm_bg.wasm || (echo "Build failed: WASM not found" && exit 1)
+
+# Production stage - serve with static server
+FROM oven/bun:1.1-alpine
+
+WORKDIR /app
+
+# Copy built assets
+COPY --from=builder /app/dist ./dist
+
+# Install serve for static file serving
+RUN bun add -g serve
+
+EXPOSE 3000
+
+CMD ["serve", "-s", "dist", "-l", "3000"]
