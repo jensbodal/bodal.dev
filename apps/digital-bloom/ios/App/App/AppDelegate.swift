@@ -1,6 +1,7 @@
 import UIKit
 import Capacitor
 import AVFoundation
+import WebKit
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -18,7 +19,38 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             print("[Audio] Failed to configure AVAudioSession: \(error)")
         }
 
+        // Configure WKWebView to have black background (delayed to ensure views are loaded)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            self.configureWebViewBackgrounds()
+        }
+
         return true
+    }
+
+    private func configureWebViewBackgrounds() {
+        // Find all WKWebView instances and set their background to black
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let window = windowScene.windows.first {
+            window.backgroundColor = .black
+            self.setWebViewBackground(in: window.rootViewController?.view)
+        }
+    }
+
+    private func setWebViewBackground(in view: UIView?) {
+        guard let view = view else { return }
+
+        // Set background for WKWebView
+        if let webView = view as? WKWebView {
+            webView.backgroundColor = .black
+            webView.isOpaque = true
+            webView.scrollView.backgroundColor = .black
+            print("[WebView] Set WKWebView background to black")
+        }
+
+        // Recursively check subviews
+        for subview in view.subviews {
+            setWebViewBackground(in: subview)
+        }
     }
 
     // MARK: - UISceneSession Lifecycle
@@ -46,6 +78,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+
+        // Ensure webview backgrounds stay black
+        configureWebViewBackgrounds()
     }
 
     func applicationWillTerminate(_ application: UIApplication) {

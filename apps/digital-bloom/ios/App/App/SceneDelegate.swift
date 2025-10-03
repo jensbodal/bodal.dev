@@ -7,16 +7,26 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Required for iOS 26 - let UIKit create window from Main.storyboard automatically
         // The storyboard will instantiate CAPBridgeViewController as initial view controller
-        guard let _ = (scene as? UIWindowScene) else { return }
+        guard let windowScene = (scene as? UIWindowScene) else { return }
 
-        // Window is created automatically by UIKit from Main.storyboard
-        // Just need to ensure the scene delegate exists
+        // Store the window reference (created by storyboard)
+        self.window = windowScene.windows.first
+
+        // Set black background for window to eliminate white bars on iOS
+        self.window?.backgroundColor = .black
+
+        // Also set for all windows in the scene
+        for window in windowScene.windows {
+            window.backgroundColor = .black
+        }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
+        // Ensure window background stays black
+        self.window?.backgroundColor = .black
     }
 
     func sceneWillResignActive(_ scene: UIScene) {

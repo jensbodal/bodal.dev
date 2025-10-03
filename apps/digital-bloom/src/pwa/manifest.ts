@@ -41,6 +41,12 @@ export function setupInstallPrompt() {
     // Don't show if already installed
     if (isStandalone()) return;
 
+    // Don't show install prompt in Capacitor app
+    if ((window as any).Capacitor) {
+        console.log('Running in Capacitor, skipping install prompt');
+        return;
+    }
+
     // Handle iOS separately (no beforeinstallprompt support)
     if (isIOS()) {
         showIOSInstallPrompt();

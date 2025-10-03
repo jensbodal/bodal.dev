@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0a0a0a">
-    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Digital Bloom">
     <meta name="description" content="Interactive physics-based generative art playground with 7 creative modes">
@@ -35,7 +35,7 @@
         </div>
 
         <!-- Top Toolbar - Mode Selector -->
-        <div id="toolbar-container" class="fixed top-0 left-0 right-0 z-10 pointer-events-none pt-4">
+        <div id="toolbar-container" class="fixed top-0 left-0 right-0 z-10 pointer-events-none">
             <div id="modeSelector" class="mx-auto max-w-full px-4 overflow-x-auto pointer-events-auto">
                 <div class="flex items-center justify-start sm:justify-center gap-1 p-1 bg-black/50 backdrop-blur-md border border-white/10 w-max mx-auto rounded-full">
                     <button class="mode-button active" data-mode="vine">
@@ -73,7 +73,7 @@
         <!-- Bottom Control Bar -->
         <div id="bottomBar" class="fixed bottom-0 left-0 right-0 z-10 pointer-events-auto bg-black/70 backdrop-blur-md border-t border-white/10 pb-safe">
             <div class="max-w-md mx-auto py-3 px-4">
-                <div class="flex items-center justify-center gap-3">
+                <div class="flex items-center justify-center gap-3 mb-2">
                     <button id="zenButton" class="control-button p-3 rounded-full flex-1" title="Zen Mode">
                         <span class="text-2xl">❀</span>
                     </button>

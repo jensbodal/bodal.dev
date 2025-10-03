@@ -5,15 +5,8 @@
     -webkit-tap-highlight-color: transparent;
 }
 
-html {
-    background-color: #000;
-    height: 100%;
-    width: 100%;
-}
-
 body {
     font-family: 'Inter', sans-serif;
-    background-color: #000;
     overscroll-behavior: none;
     position: fixed;
     width: 100%;
@@ -52,7 +45,7 @@ canvas {
 
 /* --- Mode Selector Toolbar --- */
 #toolbar-container {
-    padding-top: calc(1rem + env(safe-area-inset-top));
+    padding-top: calc(0.5rem + env(safe-area-inset-top));
 }
 
 #modeSelector::-webkit-scrollbar {
