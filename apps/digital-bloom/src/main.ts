@@ -26,9 +26,10 @@ let currentMode: PhysicsMode = 'vine';
 let selectedColorIndex = 0;
 let lastPos: Point = { x: 0, y: 0 };
 let digitalBloom: DigitalBloom;
-let masterVolume = 0.7; // Volume control (0.0 - 1.0)
+const masterVolume = 0.7; // Fixed volume level
 let isMuted = true; // Start muted
 let audioInitialized = false;
+let settingsVisible = false; // Settings panel starts collapsed
 
 // --- AUDIO SETUP ---
 let ambientDrone: Tone.PolySynth | null = null;
@@ -192,7 +193,6 @@ const canvas = document.getElementById('artCanvas') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d')!;
 const startButton = document.getElementById('startButton')!;
 const introOverlay = document.getElementById('introOverlay')!;
-const soundButton = document.getElementById('soundButton')!;
 const zenButton = document.getElementById('zenButton')!;
 const clearButton = document.getElementById('clearButton')!;
 const increaseBrushBtn = document.getElementById('increaseBrush')!;
@@ -200,8 +200,9 @@ const decreaseBrushBtn = document.getElementById('decreaseBrush')!;
 const brushSizeEl = document.getElementById('brushSize')!;
 const physicsIndicator = document.getElementById('physicsIndicator')!;
 const modeButtons = document.querySelectorAll('.mode-button');
-const volumeSlider = document.getElementById('volumeSlider') as HTMLInputElement;
-const volumeIcon = document.getElementById('volumeIcon')!;
+const settingsCog = document.getElementById('settingsCog')!;
+const bottomBar = document.getElementById('bottomBar')!;
+const muteButton = document.getElementById('muteButton')!;
 
 function showPhysicsIndicator(icon: string) {
     physicsIndicator.innerHTML = icon.startsWith('<svg') ? icon : `<span>${icon}</span>`;
@@ -225,9 +226,53 @@ modeButtons.forEach(button => {
 startButton.addEventListener('click', () => {
     introOverlay.style.opacity = '0';
     setTimeout(() => introOverlay.style.display = 'none', 500);
+
+    // Show settings cog after intro
+    settingsCog.classList.remove('opacity-0');
+    settingsCog.style.opacity = '0.8';
 });
 
-soundButton.addEventListener('click', async () => {
+settingsCog.addEventListener('click', () => {
+    vibrate();
+    settingsVisible = !settingsVisible;
+    settingsCog.classList.toggle('active');
+    bottomBar.classList.toggle('collapsed', !settingsVisible);
+
+    // Hide settings cog when bottom bar is visible
+    if (settingsVisible) {
+        settingsCog.classList.add('hide-cog');
+    } else {
+        settingsCog.classList.remove('hide-cog');
+    }
+});
+
+zenButton.addEventListener('click', () => {
+    vibrate();
+    zenMode = !zenMode;
+    zenButton.classList.toggle('active');
+});
+
+clearButton.addEventListener('click', () => {
+    vibrate(50);
+    digitalBloom.clear();
+});
+
+function updateBrushSize(delta: number) {
+    brushSize = Math.max(1, Math.min(10, brushSize + delta));
+    brushSizeEl.textContent = brushSize.toString();
+}
+
+increaseBrushBtn.addEventListener('click', () => {
+    vibrate();
+    updateBrushSize(1);
+});
+
+decreaseBrushBtn.addEventListener('click', () => {
+    vibrate();
+    updateBrushSize(-1);
+});
+
+muteButton.addEventListener('click', async () => {
     vibrate();
 
     try {
@@ -261,29 +306,25 @@ soundButton.addEventListener('click', async () => {
             console.log('[Audio] Setup complete');
         }
 
-        const btnSpan = soundButton.querySelector('span');
-
-        // Check current state: if currently playing, then pause and mute
-        // If currently paused, then play and unmute
+        // Toggle sound on/off
         if (isPlayingSound) {
-            // Currently playing → pause and mute
-            console.log('[Audio] Muting and pausing transport...');
+            // Currently playing → stop and mute
+            console.log('[Audio] Stopping sound and muting...');
             isPlayingSound = false;
             isMuted = true;
             updateVolume();
-            updateVolumeIcon();
+            updateMuteButton();
 
             Tone.Transport.pause();
-            if (btnSpan) btnSpan.textContent = '▶';
-            soundButton.classList.remove('active');
-            soundButton.setAttribute('title', 'Ambient Sound Off');
+            muteButton.classList.remove('active');
+            muteButton.setAttribute('title', 'Sound Off');
         } else {
-            // Currently paused → play and unmute
-            console.log('[Audio] Unmuting and starting transport...');
+            // Currently off → start and unmute
+            console.log('[Audio] Starting sound and unmuting...');
             isPlayingSound = true;
             isMuted = false;
             updateVolume();
-            updateVolumeIcon();
+            updateMuteButton();
 
             // Play test tone FIRST (must be synchronous with user gesture on iOS)
             if (bellSynth) {
@@ -296,57 +337,13 @@ soundButton.addEventListener('click', async () => {
             Tone.Transport.start('+0.1');
             console.log('[Audio] Transport started at', Tone.Transport.state);
 
-            if (btnSpan) btnSpan.textContent = '❚❚';
-            soundButton.classList.add('active');
-            soundButton.setAttribute('title', 'Ambient Sound On');
+            muteButton.classList.add('active');
+            muteButton.setAttribute('title', 'Sound On');
         }
     } catch (error) {
-        console.error('[Audio] Error in sound button handler:', error);
+        console.error('[Audio] Error in mute button handler:', error);
         alert('Audio initialization failed. Check console for details.');
     }
-});
-
-zenButton.addEventListener('click', () => {
-    vibrate();
-    zenMode = !zenMode;
-    zenButton.classList.toggle('active');
-});
-
-clearButton.addEventListener('click', () => {
-    vibrate(50);
-    digitalBloom.clear();
-});
-
-function updateBrushSize(delta: number) {
-    brushSize = Math.max(1, Math.min(10, brushSize + delta));
-    brushSizeEl.textContent = brushSize.toString();
-}
-
-increaseBrushBtn.addEventListener('click', () => {
-    vibrate();
-    updateBrushSize(1);
-});
-
-decreaseBrushBtn.addEventListener('click', () => {
-    vibrate();
-    updateBrushSize(-1);
-});
-
-volumeSlider.addEventListener('input', (e) => {
-    const newValue = parseFloat((e.target as HTMLInputElement).value);
-    if (newValue > 0 && isMuted) {
-        isMuted = false;
-    }
-    masterVolume = newValue;
-    updateVolume();
-    updateVolumeIcon();
-});
-
-volumeIcon.addEventListener('click', () => {
-    vibrate();
-    isMuted = !isMuted;
-    updateVolume();
-    updateVolumeIcon();
 });
 
 function updateVolume() {
@@ -360,26 +357,18 @@ function updateVolume() {
     console.log('[Audio] Volume updated:', { masterVolume, effectiveVolume, isMuted, gain: masterGain?.gain.value });
 }
 
-function updateVolumeIcon() {
-    const iconSvg = volumeIcon.querySelector('svg');
+function updateMuteButton() {
+    const iconSvg = muteButton.querySelector('svg');
     if (!iconSvg) return;
 
-    if (isMuted || masterVolume === 0) {
+    if (isMuted) {
+        // Muted: Show speaker with X
         iconSvg.innerHTML = '<path d="M11 5L6 9H2v6h4l5 4V5zM22 9l-6 6m0-6l6 6"/>';
-        iconSvg.classList.add('text-red-400');
-        iconSvg.classList.remove('text-cyan-400');
-    } else if (masterVolume < 0.33) {
-        iconSvg.innerHTML = '<path d="M11 5L6 9H2v6h4l5 4V5zm11.07 8a4.5 4.5 0 0 0 0-2"/>';
-        iconSvg.classList.remove('text-red-400');
-        iconSvg.classList.add('text-cyan-400');
-    } else if (masterVolume < 0.66) {
-        iconSvg.innerHTML = '<path d="M11 5L6 9H2v6h4l5 4V5zm11.07 8a4.5 4.5 0 0 0 0-2m-2.12-2.12a7 7 0 0 1 0 6.24"/>';
-        iconSvg.classList.remove('text-red-400');
-        iconSvg.classList.add('text-cyan-400');
+        muteButton.classList.add('muted');
     } else {
+        // Unmuted: Show speaker with waves
         iconSvg.innerHTML = '<path d="M11 5L6 9H2v6h4l5 4V5zm11.07 8a4.5 4.5 0 0 0 0-2m-2.12-2.12a7 7 0 0 1 0 6.24m-2.12-2.12a3.5 3.5 0 0 1 0-2"/>';
-        iconSvg.classList.remove('text-red-400');
-        iconSvg.classList.add('text-cyan-400');
+        muteButton.classList.remove('muted');
     }
 }
 
@@ -406,7 +395,21 @@ function getEventCoords(e: MouseEvent | TouchEvent): Point {
 }
 
 function handleDrawStart(e: MouseEvent | TouchEvent) {
-    e.preventDefault();
+    // Only prevent default if the event target is the canvas itself
+    // This prevents interference with toolbar buttons and other UI elements
+    if (e.target === canvas) {
+        e.preventDefault();
+    }
+
+    // Close settings if open
+    if (settingsVisible) {
+        settingsVisible = false;
+        settingsCog.classList.remove('active');
+        settingsCog.classList.remove('hide-cog');
+        bottomBar.classList.add('collapsed');
+        return; // Don't start drawing, just close settings
+    }
+
     isDrawing = true;
     lastPos = getEventCoords(e);
     handleDraw(lastPos.x, lastPos.y);
@@ -442,7 +445,12 @@ function handleDraw(x: number, y: number) {
 
 function handleDrawMove(e: MouseEvent | TouchEvent) {
     if (!isDrawing) return;
-    e.preventDefault();
+
+    // Only prevent default if the event target is the canvas itself
+    if (e.target === canvas) {
+        e.preventDefault();
+    }
+
     const pos = getEventCoords(e);
     const dx = pos.x - lastPos.x;
     const dy = pos.y - lastPos.y;
@@ -458,7 +466,10 @@ function handleDrawMove(e: MouseEvent | TouchEvent) {
 }
 
 function handleDrawEnd(e: MouseEvent | TouchEvent) {
-    e.preventDefault();
+    // Only prevent default if the event target is the canvas itself
+    if (e.target === canvas) {
+        e.preventDefault();
+    }
     isDrawing = false;
 }
 
@@ -466,10 +477,11 @@ canvas.addEventListener('mousedown', handleDrawStart);
 canvas.addEventListener('mousemove', handleDrawMove);
 canvas.addEventListener('mouseup', handleDrawEnd);
 canvas.addEventListener('mouseleave', handleDrawEnd);
-canvas.addEventListener('touchstart', handleDrawStart);
-canvas.addEventListener('touchmove', handleDrawMove);
-canvas.addEventListener('touchend', handleDrawEnd);
-canvas.addEventListener('touchcancel', handleDrawEnd);
+// Use {passive: false} for touch events to allow preventDefault() on iOS
+canvas.addEventListener('touchstart', handleDrawStart, { passive: false });
+canvas.addEventListener('touchmove', handleDrawMove, { passive: false });
+canvas.addEventListener('touchend', handleDrawEnd, { passive: false });
+canvas.addEventListener('touchcancel', handleDrawEnd, { passive: false });
 window.addEventListener('resize', resizeCanvas);
 
 // --- ANIMATION LOOP ---
@@ -629,7 +641,7 @@ async function run() {
         try {
             await setupAudio();
             updateVolume(); // Apply muted state
-            updateVolumeIcon(); // Update icon to show muted
+            updateMuteButton(); // Update icon to show muted
             console.log('Audio initialized (muted)');
         } catch (error) {
             console.error('Audio initialization failed:', error);
