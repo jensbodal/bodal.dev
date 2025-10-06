@@ -3,14 +3,11 @@ name: Test Digital Bloom iOS Build
 on:
   pull_request:
     branches: ["main"]
+  push:
+    branches: ["main"]
     paths:
       - 'apps/digital-bloom/**'
       - '.github/workflows/test-digital-bloom-ios.yml'
-  push:
-    branches:
-      - main
-    paths:
-      - 'apps/digital-bloom/**'
 
 jobs:
   test-ios-build:
