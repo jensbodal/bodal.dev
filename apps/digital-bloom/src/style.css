@@ -22,6 +22,7 @@ canvas {
     position: absolute;
     top: 0;
     left: 0;
+    z-index: 1;
 }
 
 /* --- UI Component Styles --- */
@@ -110,11 +111,10 @@ canvas {
 
 /* --- Bottom Control Bar --- */
 #bottomBar {
-    background: rgba(10, 10, 10, 0.7);
+    background: rgba(10, 10, 10, 0.85);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding-bottom: env(safe-area-inset-bottom);
 }
 
 @keyframes subtle-pulse {
@@ -151,67 +151,83 @@ canvas {
     }
 }
 
-/* --- Volume Controls --- */
-#volumeIcon {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* --- Settings Cog Button --- */
+#settingsCog {
+    /* Position above bottom bar with comfortable spacing */
+    bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
+    left: 50%;
+    transform: translateX(-50%);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: subtle-pulse 3s ease-in-out infinite;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(0, 255, 255, 0.3);
+    min-width: 44px;
+    min-height: 44px;
 }
 
-#volumeIcon:active {
-    transform: scale(0.9);
+/* Hide settings cog when bottom bar is visible */
+#settingsCog.hide-cog {
+    opacity: 0;
+    transform: translateX(-50%) translateY(100px);
+    pointer-events: none;
+    animation: none;
 }
 
-#volumeIcon svg {
+#settingsCog:hover {
+    transform: translateX(-50%) rotate(90deg) scale(1.15);
+    opacity: 1;
+}
+
+#settingsCog:active {
+    transform: translateX(-50%) rotate(90deg) scale(0.9);
+}
+
+#settingsCog.active {
+    color: #00ffff;
+    background-color: rgba(0, 255, 255, 0.2);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    transform: translateX(-50%) rotate(180deg);
+    opacity: 1;
+    animation: none;
+}
+
+@keyframes subtle-pulse {
+    0%, 100% {
+        opacity: 0.8;
+        box-shadow: 0 0 0 rgba(0, 255, 255, 0);
+    }
+    50% {
+        opacity: 1;
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+    }
+}
+
+/* --- Mute Button --- */
+#muteButton svg {
     transition: all 0.2s ease;
 }
 
-.volume-slider {
-    -webkit-appearance: none;
-    appearance: none;
-    height: 6px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 3px;
-    outline: none;
-    transition: background 0.2s;
+#muteButton.muted svg {
+    color: #ff6b6b;
 }
 
-.volume-slider:hover {
-    background: rgba(255, 255, 255, 0.3);
+#muteButton:not(.muted) svg {
+    color: #00ffff;
 }
 
-.volume-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 18px;
-    height: 18px;
-    background: #00ffff;
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-    transition: all 0.2s;
+/* --- Collapsible Bottom Bar --- */
+#bottomBar.collapsed {
+    transform: translateY(100%);
+    pointer-events: none !important;
+    visibility: hidden;
+    opacity: 0;
 }
 
-.volume-slider::-webkit-slider-thumb:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
-}
-
-.volume-slider::-moz-range-thumb {
-    width: 18px;
-    height: 18px;
-    background: #00ffff;
-    border-radius: 50%;
-    cursor: pointer;
-    border: none;
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-    transition: all 0.2s;
-}
-
-.volume-slider::-moz-range-thumb:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+#bottomBar:not(.collapsed) {
+    pointer-events: auto;
+    transform: translateY(0);
+    visibility: visible;
+    opacity: 1;
 }
 
 /* --- Landscape Mode Optimizations --- */
