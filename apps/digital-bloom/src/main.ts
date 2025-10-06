@@ -31,9 +31,13 @@ let isMuted = true; // Start muted
 let audioInitialized = false;
 let settingsVisible = false; // Settings panel starts collapsed
 
+// Audio throttling to prevent rapid-fire retriggering
+let lastChimeTime = 0;
+const MIN_CHIME_INTERVAL_MS = 50; // Minimum 50ms between chimes (20 chimes/sec max)
+
 // --- AUDIO SETUP ---
 let ambientDrone: Tone.PolySynth | null = null;
-let bellSynth: Tone.Synth | null = null;
+let bellSynth: Tone.PolySynth | null = null;
 let padSynth: Tone.Synth | null = null;
 let ambientLoop: Tone.Loop | null = null;
 let reverb: Tone.Reverb | null = null;
@@ -64,15 +68,19 @@ async function setupAudio() {
             console.log('[Audio] navigator.audioSession not available (pre-iOS 16.4 or not iOS)');
         }
 
-        // Create master gain for overall volume control (increased for iOS)
-        masterGain = new Tone.Gain(1.5).toDestination();
+        // Create master gain for overall volume control
+        masterGain = new Tone.Gain(1.2).toDestination();
         console.log('[Audio] Master gain created');
+
+        // Add limiter to prevent clipping from multiple simultaneous voices
+        const limiter = new Tone.Limiter(-1).connect(masterGain);
+        console.log('[Audio] Limiter created');
 
         // Create reverb for ambient space
         reverb = new Tone.Reverb({
             decay: 6,
             preDelay: 0.05
-        }).connect(masterGain);
+        }).connect(limiter);
         console.log('[Audio] Reverb created, generating...');
 
         // Wait for reverb to be ready
@@ -99,22 +107,25 @@ async function setupAudio() {
         }).connect(reverb);
         padSynth.volume.value = -10; // Increased from -14
 
-        // Singing bowl / bell tone using FMSynth for smooth, resonant sound
-        bellSynth = new Tone.Synth({
-            oscillator: {
-                type: 'fmsine',
-                modulationType: 'sine',
-                modulationIndex: 2,
-                harmonicity: 2.5
-            },
-            envelope: {
-                attack: 0.02,
-                decay: 1.2,
-                sustain: 0.15,
-                release: 3.5
+        // Singing bowl / bell tone using PolySynth for smooth overlapping notes
+        bellSynth = new Tone.PolySynth(Tone.Synth, {
+            maxPolyphony: 8,  // Allow up to 8 overlapping notes
+            voice: {
+                oscillator: {
+                    type: 'fmsine',
+                    modulationType: 'sine',
+                    modulationIndex: 2,
+                    harmonicity: 2.5
+                },
+                envelope: {
+                    attack: 0.08,  // Increased from 0.02 to prevent clicks
+                    decay: 1.2,
+                    sustain: 0.15,
+                    release: 3.5
+                }
             }
         }).connect(reverb);
-        bellSynth.volume.value = -3; // Increased from -6
+        bellSynth.volume.value = -6; // Reduced from -3 to account for multiple voices
 
         console.log('[Audio] All synths created');
 
@@ -168,6 +179,13 @@ function playChime(y: number) {
         console.log('[Audio] Context not running, skipping chime');
         return;
     }
+
+    // Throttle audio triggers to prevent rapid-fire retriggering
+    const now = performance.now();
+    if (now - lastChimeTime < MIN_CHIME_INTERVAL_MS) {
+        return;
+    }
+    lastChimeTime = now;
 
     const noteIndex = Math.min(
         bellNotes.length - 1,
