@@ -8,17 +8,17 @@ console.log('🧪 Testing bodal.dev site...\n');
 // Test 1: Check dependencies
 console.log('1️⃣ Checking dependencies...');
 try {
-  execSync('npm list --depth=0', { stdio: 'pipe' });
+  execSync('bun pm ls --all', { stdio: 'pipe' });
   console.log('✅ All dependencies installed\n');
 } catch (error) {
-  console.log('❌ Missing dependencies. Run: npm install\n');
+  console.log('❌ Missing dependencies. Run: bun install\n');
   process.exit(1);
 }
 
 // Test 2: TypeScript check
 console.log('2️⃣ Running TypeScript checks...');
 try {
-  execSync('npm run typecheck', { stdio: 'pipe' });
+  execSync('bun run typecheck', { stdio: 'pipe' });
   console.log('✅ TypeScript checks passed\n');
 } catch (error) {
   console.log('❌ TypeScript errors found\n');
@@ -30,7 +30,7 @@ try {
 console.log('3️⃣ Testing production build...');
 try {
   console.log('   Building... (this may take a moment)');
-  execSync('npm run build', { stdio: 'pipe' });
+  execSync('bun run build', { stdio: 'pipe' });
   console.log('✅ Build completed successfully\n');
 } catch (error) {
   console.log('❌ Build failed\n');
@@ -41,7 +41,7 @@ try {
 // Test 4: Start dev server and check if it's running
 console.log('4️⃣ Testing development server...');
 const { spawn } = require('child_process');
-const devServer = spawn('npm', ['run', 'dev'], {
+const devServer = spawn('bun', ['run', 'dev'], {
   detached: false,
   stdio: 'pipe'
 });
@@ -62,7 +62,7 @@ devServer.stdout.on('data', (data) => {
           console.log('✅ Server responding on http://localhost:3000\n');
           console.log('🎉 All tests passed! Your site is ready.\n');
           console.log('📝 Next steps:');
-          console.log('   1. Run: npm run dev');
+          console.log('   1. Run: bun run dev');
           console.log('   2. Open: http://localhost:3000');
           console.log('   3. Try typing "help" in the terminal!\n');
           devServer.kill();

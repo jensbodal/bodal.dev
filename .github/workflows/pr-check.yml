@@ -52,5 +52,36 @@ jobs:
       - name: Build
         run: bun run build
 
+      - name: Verify deployment artifacts
+        run: |
+          if [ ! -d "out" ]; then
+            echo "❌ Output directory 'out' not found"
+            exit 1
+          fi
+          echo "✅ Output directory exists"
+
+          if [ ! -f "out/index.html" ]; then
+            echo "❌ index.html not found in output"
+            exit 1
+          fi
+          echo "✅ index.html found"
+
+          echo "📦 Output directory contents:"
+          ls -la out/
+
+      - name: Check digital-bloom build
+        run: |
+          if [ ! -d "public/digital-bloom" ]; then
+            echo "❌ digital-bloom not found in public directory"
+            exit 1
+          fi
+          echo "✅ digital-bloom found"
+
+          if [ ! -f "public/digital-bloom/index.html" ]; then
+            echo "❌ digital-bloom/index.html not found"
+            exit 1
+          fi
+          echo "✅ digital-bloom/index.html found"
+
       - name: Typecheck
         run: bun run typecheck

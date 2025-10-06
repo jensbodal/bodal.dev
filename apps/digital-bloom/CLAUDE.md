@@ -34,16 +34,16 @@ Digital Bloom is an interactive physics-based generative art playground built wi
 
 ```bash
 # Install dependencies
-npm install
+bun install
 
 # Development server with hot reload (localhost:5173)
-npm run dev
+bun run dev
 
 # Production build (outputs to dist/)
-npm run build
+bun run build
 
 # Preview production build
-npm run preview
+bun run preview
 ```
 
 ### WASM Development

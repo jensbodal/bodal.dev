@@ -7,7 +7,7 @@
     "build": "bun run build:digital-bloom && next build",
     "build:digital-bloom": "cd apps/digital-bloom && bun install && bun run build && cd ../.. && bun run deploy:digital-bloom",
     "deploy:digital-bloom": "rm -rf public/digital-bloom && cp -r apps/digital-bloom/dist public/digital-bloom",
-    "start": "npx serve@latest out",
+    "start": "bunx serve@latest out",
     "lint": "next lint",
     "export": "next build",
     "typecheck": "tsc --noEmit",

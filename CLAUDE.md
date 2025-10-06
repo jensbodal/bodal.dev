@@ -1,0 +1,1 @@
+- always run the build after working on the ios app
