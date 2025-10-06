@@ -1,20 +1,37 @@
 {
   "name": "digital-bloom",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "sync:version": "node scripts/sync-version.js",
+    "cap:sync": "bun run sync:version && cap sync",
+    "cap:open:ios": "cap open ios",
+    "cap:run:ios": "cap run ios",
+    "ios:icons": "chmod +x scripts/generate-ios-icons.sh && ./scripts/generate-ios-icons.sh",
+    "ios:build": "bun run ios:icons && bun run build && bun run cap:sync ios",
+    "ios:open": "open ios/App/App.xcworkspace",
+    "ios:test": "bash scripts/ios-integration-test.sh"
   },
   "devDependencies": {
+    "@capacitor/cli": "^7.4.3",
+    "@capacitor/core": "^7.4.3",
+    "@capacitor/ios": "^7.4.3",
+    "@vitest/ui": "^2.1.8",
     "autoprefixer": "^10.4.21",
+    "happy-dom": "^15.11.7",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.13",
     "typescript": "^5.9.2",
     "vite": "^4.0.0",
-    "vite-plugin-wasm-pack": "^0.1.12"
+    "vite-plugin-wasm-pack": "^0.1.12",
+    "vitest": "^2.1.8"
   },
   "dependencies": {
     "tone": "^15.1.22"

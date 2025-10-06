@@ -17,7 +17,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "lts/*"
-          cache: npm
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -48,10 +47,10 @@ jobs:
           wasm-pack build --target web
 
       - name: Install dependencies
-        run: npm ci
+        run: bun install
 
       - name: Build
-        run: npm run build
+        run: bun run build
 
       - name: Typecheck
-        run: npm run typecheck
+        run: bun run typecheck

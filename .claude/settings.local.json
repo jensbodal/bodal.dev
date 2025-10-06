@@ -4,7 +4,8 @@
       "Bash(npm install:*)",
       "Bash(npx tailwindcss init:*)",
       "Read(//Users/jensbodal/git/neon-canvas/gemini/**)",
-      "Bash(bun run:*)"
+      "Bash(bun run:*)",
+      "Bash(cat:*)"
     ],
     "deny": []
   }

@@ -5,13 +5,20 @@ let deferredPrompt: any = null;
 
 // Service Worker Registration
 export function registerServiceWorker() {
+    // Skip service worker in Capacitor (native app doesn't need it)
+    if ((window as any).Capacitor) {
+        console.log('Running in Capacitor, skipping service worker registration');
+        return;
+    }
+
     if ('serviceWorker' in navigator) {
         // Register in both dev (localhost) and production (HTTPS)
         const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
         const isHttps = window.location.protocol === 'https:';
 
         if (isLocalhost || isHttps) {
-            navigator.serviceWorker.register('/digital-bloom/sw.js')
+            // Use relative path for service worker to work with base: './' configuration
+            navigator.serviceWorker.register('./sw.js')
                 .then(reg => console.log('Service Worker registered:', reg.scope))
                 .catch(err => console.log('Service Worker registration failed:', err));
         }
@@ -33,6 +40,12 @@ function isStandalone() {
 export function setupInstallPrompt() {
     // Don't show if already installed
     if (isStandalone()) return;
+
+    // Don't show install prompt in Capacitor app
+    if ((window as any).Capacitor) {
+        console.log('Running in Capacitor, skipping install prompt');
+        return;
+    }
 
     // Handle iOS separately (no beforeinstallprompt support)
     if (isIOS()) {

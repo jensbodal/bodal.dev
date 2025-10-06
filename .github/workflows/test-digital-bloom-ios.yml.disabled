@@ -1,0 +1,121 @@
+name: Test Digital Bloom iOS Build
+
+on:
+  pull_request:
+    branches: ["main"]
+  push:
+    branches: ["main"]
+    paths:
+      - 'apps/digital-bloom/**'
+      - '.github/workflows/test-digital-bloom-ios.yml'
+
+jobs:
+  test-ios-build:
+    name: Test iOS Build & Integration
+    runs-on: macos-14  # Latest macOS with Xcode 15+
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Cache Cargo registry
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-registry-
+
+      - name: Cache Cargo index
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/git
+          key: ${{ runner.os }}-cargo-index-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-index-
+
+      - name: Cache wasm-pack
+        id: cache-wasm-pack
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin/wasm-pack
+          key: ${{ runner.os }}-wasm-pack
+
+      - name: Install wasm-pack
+        if: steps.cache-wasm-pack.outputs.cache-hit != 'true'
+        run: cargo install wasm-pack --locked
+
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: apps/digital-bloom/ios/App/Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('apps/digital-bloom/ios/App/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+
+      - name: Install dependencies
+        working-directory: apps/digital-bloom
+        run: bun install
+
+      - name: Build iOS app
+        working-directory: apps/digital-bloom
+        run: bun run ios:build
+
+      - name: Verify iOS build artifacts
+        run: |
+          if [ ! -d apps/digital-bloom/ios/App/App/public ]; then
+            echo "❌ iOS public directory not synced"
+            exit 1
+          fi
+          echo "✅ iOS public directory synced"
+
+          if [ ! -f apps/digital-bloom/ios/App/App/public/index.html ]; then
+            echo "❌ index.html not synced to iOS"
+            exit 1
+          fi
+          echo "✅ index.html synced to iOS"
+
+      - name: List available simulators
+        run: xcrun simctl list devices available
+
+      - name: Run iOS integration test
+        working-directory: apps/digital-bloom
+        run: bash scripts/ios-integration-test.sh
+
+      - name: Upload integration test screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-integration-screenshot
+          path: /tmp/success-launch.png
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Archive iOS build
+        if: success()
+        run: |
+          cd apps/digital-bloom/ios/App
+          xcodebuild archive \
+            -workspace App.xcworkspace \
+            -scheme App \
+            -archivePath ${{ runner.temp }}/DigitalBloom.xcarchive \
+            -configuration Release \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Upload iOS archive
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: digital-bloom-ios-archive
+          path: ${{ runner.temp }}/DigitalBloom.xcarchive
+          retention-days: 7
