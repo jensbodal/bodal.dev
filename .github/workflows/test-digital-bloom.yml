@@ -2,6 +2,7 @@ name: Test Digital Bloom Build
 
 on:
   pull_request:
+    branches: ["main"]
     paths:
       - 'apps/digital-bloom/**'
       - '.github/workflows/test-digital-bloom.yml'
