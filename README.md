@@ -13,7 +13,7 @@ Personal website and blog built with Next.js and deployed to GitHub Pages.
 
 ## Prerequisites
 
-- Node.js 18+ and npm
+- Bun 1.0+ (or Node.js 18+ with npm)
 - Git
 
 ## Local Development
@@ -26,23 +26,23 @@ git clone https://github.com/jensbodal/bodal.dev.git
 cd bodal.dev
 
 # Install dependencies
-npm install
+bun install
 ```
 
 ### Development Commands
 
 ```bash
 # Start development server
-npm run dev
+bun run dev
 
 # Build for production
-npm run build
+bun run build
 
 # Run type checking
-npm run typecheck
+bun run typecheck
 
 # Run linting
-npm run lint
+bun run lint
 ```
 
 The development server runs at [http://localhost:3000](http://localhost:3000)
@@ -101,7 +101,7 @@ The site automatically deploys to GitHub Pages when changes are pushed to the `m
 
 ```bash
 # Build the static site
-npm run build
+bun run build
 
 # The output will be in the 'out' directory
 ```

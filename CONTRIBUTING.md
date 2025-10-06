@@ -23,7 +23,7 @@ When using AI-assisted development tools, use these prefixes:
    ```
 3. Install dependencies:
    ```bash
-   npm install
+   bun install
    ```
 4. Create a feature branch:
    ```bash
@@ -34,16 +34,16 @@ When using AI-assisted development tools, use these prefixes:
 
 ```bash
 # Start development server
-npm run dev
+bun run dev
 
 # Type checking (must pass before committing)
-npm run typecheck
+bun run typecheck
 
 # Linting
-npm run lint
+bun run lint
 
 # Build for production
-npm run build
+bun run build
 ```
 
 ## Code Style
@@ -96,9 +96,9 @@ docs: update README with deployment instructions
 ### Code Quality Checklist
 
 Before submitting a PR, ensure:
-- [ ] Code passes `npm run typecheck`
-- [ ] Code passes `npm run lint`
-- [ ] Site builds successfully with `npm run build`
+- [ ] Code passes `bun run typecheck`
+- [ ] Code passes `bun run lint`
+- [ ] Site builds successfully with `bun run build`
 - [ ] All links work correctly
 - [ ] Images have alt text
 - [ ] New features work in both light and dark themes
@@ -108,9 +108,9 @@ Before submitting a PR, ensure:
 
 Run these commands before submitting:
 ```bash
-npm run typecheck
-npm run lint
-npm run build
+bun run typecheck
+bun run lint
+bun run build
 ```
 
 ## Getting Help
