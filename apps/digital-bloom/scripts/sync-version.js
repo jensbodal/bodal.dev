@@ -46,10 +46,30 @@ try {
         `$1${version};`
     );
 
+    // Update CURRENT_PROJECT_VERSION (build number)
+    // Extract build number from version (e.g., "1.2.3" -> build "3")
+    const versionParts = version.split('.');
+    const buildNumber = versionParts.length >= 3 ? versionParts[2] : '1';
+
+    const currentProjectVersionRegex = /(CURRENT_PROJECT_VERSION = )\d+;/g;
+    const buildMatches = projectContent.match(currentProjectVersionRegex);
+
+    if (!buildMatches || buildMatches.length === 0) {
+        console.error('❌ Could not find CURRENT_PROJECT_VERSION in project.pbxproj');
+        process.exit(1);
+    }
+
+    // Replace all occurrences of CURRENT_PROJECT_VERSION
+    projectContent = projectContent.replace(
+        currentProjectVersionRegex,
+        `$1${buildNumber};`
+    );
+
     // Write updated project file
     writeFileSync(XCODE_PROJECT_PATH, projectContent, 'utf8');
 
     console.log(`✅ Updated Xcode MARKETING_VERSION to ${version}`);
+    console.log(`✅ Updated Xcode CURRENT_PROJECT_VERSION (build number) to ${buildNumber}`);
     console.log(`📱 Updated ${matches.length} configuration(s) in project.pbxproj`);
 } catch (error) {
     console.error('❌ Error syncing version:', error.message);
