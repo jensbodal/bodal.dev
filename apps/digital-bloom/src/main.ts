@@ -109,22 +109,20 @@ async function setupAudio() {
 
         // Singing bowl / bell tone using PolySynth for smooth overlapping notes
         bellSynth = new Tone.PolySynth(Tone.Synth, {
-            maxPolyphony: 8,  // Allow up to 8 overlapping notes
-            voice: {
-                oscillator: {
-                    type: 'fmsine',
-                    modulationType: 'sine',
-                    modulationIndex: 2,
-                    harmonicity: 2.5
-                },
-                envelope: {
-                    attack: 0.08,  // Increased from 0.02 to prevent clicks
-                    decay: 1.2,
-                    sustain: 0.15,
-                    release: 3.5
-                }
+            oscillator: {
+                type: 'fmsine',
+                modulationType: 'sine',
+                modulationIndex: 2,
+                harmonicity: 2.5
+            },
+            envelope: {
+                attack: 0.08,  // Increased from 0.02 to prevent clicks
+                decay: 1.2,
+                sustain: 0.15,
+                release: 3.5
             }
         }).connect(reverb);
+        bellSynth.maxPolyphony = 8;  // Allow up to 8 overlapping notes
         bellSynth.volume.value = -6; // Reduced from -3 to account for multiple voices
 
         console.log('[Audio] All synths created');
