@@ -416,7 +416,7 @@ function handleDrawStart(e: MouseEvent | TouchEvent) {
 }
 
 function handleDraw(x: number, y: number) {
-    if (currentMode !== 'vortex' && currentMode !== 'lightning') playChime(y);
+    if (currentMode !== 'lightning') playChime(y);
 
     switch(currentMode) {
         case 'vine':

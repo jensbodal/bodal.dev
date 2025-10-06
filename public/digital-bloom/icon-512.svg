@@ -1,7 +1,97 @@
 <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'>
-  <rect fill='#0a0a0a' width='512' height='512'/>
-  <path d='M128 416s32-192 192-192 192 192 192 192' fill='none' stroke='#01cdfe' stroke-width='20' stroke-linecap='round'/>
-  <path d='M160 384s24-128 128-128 128 128 128 128' fill='none' stroke='#ff71ce' stroke-width='16' stroke-linecap='round'/>
-  <path d='M192 352s20-96 96-96 96 96 96 96' fill='none' stroke='#05ffa1' stroke-width='12' stroke-linecap='round'/>
-  <path d='M224 320s16-64 64-64 64 64 64 64' fill='none' stroke='#b967ff' stroke-width='8' stroke-linecap='round'/>
+  <defs>
+    <radialGradient id='bg' cx='50%' cy='50%' r='50%'>
+      <stop offset='0%' stop-color='#1e2740'/>
+      <stop offset='100%' stop-color='#0a0a0a'/>
+    </radialGradient>
+    <linearGradient id='cyan' x1='0%' y1='0%' x2='100%' y2='100%'>
+      <stop offset='0%' stop-color='#05ffa1'/>
+      <stop offset='100%' stop-color='#01cdfe'/>
+    </linearGradient>
+    <linearGradient id='pink' x1='0%' y1='0%' x2='100%' y2='100%'>
+      <stop offset='0%' stop-color='#ff71ce'/>
+      <stop offset='100%' stop-color='#b967ff'/>
+    </linearGradient>
+    <filter id='glow'>
+      <feGaussianBlur stdDeviation='8' result='coloredBlur'/>
+      <feMerge>
+        <feMergeNode in='coloredBlur'/>
+        <feMergeNode in='SourceGraphic'/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect fill='url(#bg)' width='512' height='512' rx='110'/>
+
+  <!-- Large dramatic curved petals -->
+  <g filter='url(#glow)'>
+    <!-- Top cyan petal -->
+    <path d='M256 80 C200 100 180 140 180 180 C180 220 210 240 256 256 C302 240 332 220 332 180 C332 140 312 100 256 80 Z'
+          fill='url(#cyan)' opacity='0.9'/>
+
+    <!-- Right pink petal -->
+    <path d='M432 256 C412 200 372 180 332 180 C292 180 272 210 256 256 C272 302 292 332 332 332 C372 332 412 312 432 256 Z'
+          fill='url(#pink)' opacity='0.85'/>
+
+    <!-- Bottom green petal -->
+    <path d='M256 432 C312 412 332 372 332 332 C332 292 302 272 256 256 C210 272 180 292 180 332 C180 372 200 412 256 432 Z'
+          fill='#05ffa1' opacity='0.9'/>
+
+    <!-- Left purple petal -->
+    <path d='M80 256 C100 312 140 332 180 332 C220 332 240 302 256 256 C240 210 220 180 180 180 C140 180 100 200 80 256 Z'
+          fill='#b967ff' opacity='0.85'/>
+
+    <!-- Diagonal top-right pink accent -->
+    <path d='M340 140 C320 150 310 170 310 190 C310 210 320 220 340 220 C360 220 380 210 390 190 C395 175 390 155 370 145 C360 140 350 138 340 140 Z'
+          fill='#ff71ce' opacity='0.95'/>
+
+    <!-- Diagonal bottom-left cyan accent -->
+    <path d='M172 340 C192 350 202 370 202 390 C202 410 192 420 172 420 C152 420 132 410 122 390 C117 375 122 355 142 345 C152 340 162 338 172 340 Z'
+          fill='#01cdfe' opacity='0.95'/>
+  </g>
+
+  <!-- Lightning bolt strikes -->
+  <g filter='url(#glow)' opacity='0.7'>
+    <path d='M256 140 L250 200 L270 200 L256 240' fill='none' stroke='#fffb96' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/>
+    <path d='M370 256 L310 262 L310 242 L270 256' fill='none' stroke='#fffb96' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/>
+    <path d='M256 372 L262 312 L242 312 L256 272' fill='none' stroke='#fffb96' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/>
+    <path d='M142 256 L202 250 L202 270 L242 256' fill='none' stroke='#fffb96' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/>
+  </g>
+
+  <!-- Constellation connection lines -->
+  <g filter='url(#glow)' opacity='0.4'>
+    <line x1='256' y1='140' x2='340' y2='180' stroke='#01cdfe' stroke-width='2'/>
+    <line x1='340' y1='180' x2='372' y2='256' stroke='#ff71ce' stroke-width='2'/>
+    <line x1='372' y1='256' x2='332' y2='332' stroke='#05ffa1' stroke-width='2'/>
+    <line x1='332' y1='332' x2='256' y2='372' stroke='#b967ff' stroke-width='2'/>
+    <line x1='256' y1='372' x2='180' y2='332' stroke='#01cdfe' stroke-width='2'/>
+    <line x1='180' y1='332' x2='140' y2='256' stroke='#ff71ce' stroke-width='2'/>
+    <line x1='140' y1='256' x2='180' y2='180' stroke='#05ffa1' stroke-width='2'/>
+    <line x1='180' y1='180' x2='256' y2='140' stroke='#b967ff' stroke-width='2'/>
+  </g>
+
+  <!-- Particle burst dots -->
+  <g filter='url(#glow)'>
+    <circle cx='256' cy='120' r='6' fill='#01cdfe'/>
+    <circle cx='340' cy='160' r='5' fill='#ff71ce'/>
+    <circle cx='392' cy='256' r='6' fill='#05ffa1'/>
+    <circle cx='352' cy='352' r='5' fill='#b967ff'/>
+    <circle cx='256' cy='392' r='6' fill='#01cdfe'/>
+    <circle cx='160' cy='352' r='5' fill='#ff71ce'/>
+    <circle cx='120' cy='256' r='6' fill='#05ffa1'/>
+    <circle cx='172' cy='160' r='5' fill='#b967ff'/>
+    <circle cx='290' cy='180' r='4' fill='#fffb96'/>
+    <circle cx='332' cy='290' r='4' fill='#fffb96'/>
+    <circle cx='222' cy='332' r='4' fill='#fffb96'/>
+    <circle cx='180' cy='222' r='4' fill='#fffb96'/>
+  </g>
+
+  <!-- Bright center core with multiple layers -->
+  <g filter='url(#glow)'>
+    <circle cx='256' cy='256' r='40' fill='#b967ff' opacity='0.3'/>
+    <circle cx='256' cy='256' r='30' fill='#ff71ce' opacity='0.5'/>
+    <circle cx='256' cy='256' r='20' fill='#01cdfe' opacity='0.7'/>
+    <circle cx='256' cy='256' r='12' fill='#fffb96' opacity='0.9'/>
+    <circle cx='256' cy='256' r='6' fill='#ffffff'/>
+  </g>
 </svg>
