@@ -112,6 +112,16 @@
         <div id="audioFeedback" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-cyan-500/90 text-black px-4 py-2 rounded-full text-sm font-medium opacity-0 pointer-events-none transition-opacity duration-300">
             🔊 Audio ready
         </div>
+
+        <!-- Debug overlay for touch events -->
+        <div id="debugOverlay" class="fixed bottom-20 left-2 right-2 z-50 bg-black/90 text-white px-3 py-2 rounded text-xs font-mono opacity-0 pointer-events-none transition-opacity duration-300 max-h-40 overflow-auto">
+            <div id="debugLog"></div>
+        </div>
+
+        <!-- Manual fix button for testing -->
+        <button id="manualFixButton" style="position: fixed; bottom: 8px; right: 8px; z-index: 9999; background-color: #06b6d4; color: black; padding: 12px 20px; border-radius: 9999px; font-size: 14px; font-weight: bold; pointer-events: auto; opacity: 1; border: none; touch-action: manipulation;">
+            Fix Toolbar
+        </button>
     </div>
 
     <script type="module" src="/src/main.ts"></script>

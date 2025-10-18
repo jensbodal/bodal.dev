@@ -1,7 +1,7 @@
 {
   "name": "digital-bloom",
   "private": true,
-  "version": "1.1.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -20,7 +20,10 @@
     "ios:icons": "chmod +x scripts/generate-ios-icons.sh && ./scripts/generate-ios-icons.sh",
     "ios:build": "bun run ios:icons && bun run build && bun run cap:sync ios",
     "ios:open": "open ios/App/App.xcworkspace",
-    "ios:test": "bash scripts/ios-integration-test.sh"
+    "ios:test": "bash scripts/ios-integration-test.sh",
+    "ios:deploy": "bash scripts/build-and-deploy-ios.sh",
+    "ios:deploy:device": "bash scripts/build-and-deploy-ios.sh",
+    "ios:logs": "bash scripts/parse-device-logs.sh"
   },
   "devDependencies": {
     "@capacitor/cli": "^7.4.3",
