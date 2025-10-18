@@ -252,7 +252,8 @@ canvas {
     }
 
     #settingsCog {
-        bottom: 4rem !important;
+        /* Increase spacing to prevent overlap with bottom bar (~80-100px tall) */
+        bottom: 7.5rem !important; /* ~120px to clear bottom bar */
     }
 
     .mode-button {
