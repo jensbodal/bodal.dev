@@ -219,29 +219,6 @@ const modeButtons = document.querySelectorAll('.mode-button');
 const settingsCog = document.getElementById('settingsCog')!;
 const bottomBar = document.getElementById('bottomBar')!;
 const muteButton = document.getElementById('muteButton')!;
-const debugOverlay = document.getElementById('debugOverlay')!;
-const debugLog = document.getElementById('debugLog')!;
-const manualFixButton = document.getElementById('manualFixButton')!;
-
-// Debug logging function
-const debugMessages: string[] = [];
-let debugTimeout: number | undefined;
-function debugToScreen(message: string) {
-    console.log('[DEBUG]', message);
-    debugMessages.push(`${new Date().toLocaleTimeString()}: ${message}`);
-    if (debugMessages.length > 20) debugMessages.shift(); // Keep more messages
-    debugLog.innerHTML = debugMessages.join('<br>');
-    debugOverlay.style.opacity = '1';
-    debugOverlay.style.pointerEvents = 'none'; // Ensure it doesn't block anything
-
-    // Keep visible always during debugging
-    // if (debugTimeout !== undefined) {
-    //     clearTimeout(debugTimeout);
-    // }
-    // debugTimeout = window.setTimeout(() => {
-    //     debugOverlay.style.opacity = '0';
-    // }, 10000); // Show for 10 seconds
-}
 
 function showPhysicsIndicator(icon: string) {
     physicsIndicator.innerHTML = icon.startsWith('<svg') ? icon : `<span>${icon}</span>`;
@@ -251,64 +228,14 @@ function showPhysicsIndicator(icon: string) {
     }, 10);
 }
 
-// Handle mode button clicks with touchstart for faster response on iOS
-function handleModeButtonTap(button: Element) {
-    console.log('[Mode Button] Tapped:', (button as HTMLElement).dataset.mode);
-    vibrate();
-    currentMode = (button as HTMLElement).dataset.mode as PhysicsMode;
-    modeButtons.forEach(btn => btn.classList.remove('active'));
-    button.classList.add('active');
-    const svg = button.querySelector('svg');
-    if (svg) showPhysicsIndicator(svg.outerHTML);
-}
-
-modeButtons.forEach((button, index) => {
-    console.log('[Mode Button] Setting up listeners for button', index, (button as HTMLElement).dataset.mode);
-
-    // Use touchstart for immediate response on touch devices
-    button.addEventListener('touchstart', (e) => {
-        const mode = (button as HTMLElement).dataset.mode;
-        debugToScreen(`BTN TOUCH: ${mode}`);
-        console.log('[Mode Button] touchstart event:', {
-            target: e.target,
-            currentTarget: e.currentTarget,
-            mode,
-            touches: e.touches.length
-        });
-
-        // Check if touch is actually within button bounds (defensive check for iOS orientation bug)
-        if (e.touches.length > 0) {
-            const touch = e.touches[0];
-            const rect = (button as HTMLElement).getBoundingClientRect();
-            const isWithinBounds =
-                touch.clientX >= rect.left &&
-                touch.clientX <= rect.right &&
-                touch.clientY >= rect.top &&
-                touch.clientY <= rect.bottom;
-
-            if (!isWithinBounds) {
-                debugToScreen(`TOUCH OUT OF BOUNDS: ${mode}`);
-                console.log('[Mode Button] Touch outside button bounds, ignoring');
-                return;
-            }
-        }
-
-        e.preventDefault(); // Prevent ghost clicks
-        e.stopPropagation(); // Don't let event reach canvas
-        handleModeButtonTap(button);
-    }, { passive: false });
-
-    // Keep click for mouse/desktop support
-    button.addEventListener('click', (e) => {
-        console.log('[Mode Button] click event:', {
-            detail: e.detail,
-            target: e.target,
-            currentTarget: e.currentTarget
-        });
-        // Only handle click if it wasn't already handled by touchstart
-        if (e.detail === 0) { // detail === 0 means keyboard/non-pointer activation
-            handleModeButtonTap(button);
-        }
+modeButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        vibrate();
+        currentMode = (button as HTMLElement).dataset.mode as PhysicsMode;
+        modeButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+        const svg = button.querySelector('svg');
+        if (svg) showPhysicsIndicator(svg.outerHTML);
     });
 });
 
@@ -484,24 +411,10 @@ function getEventCoords(e: MouseEvent | TouchEvent): Point {
 }
 
 function handleDrawStart(e: MouseEvent | TouchEvent) {
-    const targetInfo = `${(e.target as HTMLElement)?.tagName}#${(e.target as HTMLElement)?.id}`;
-    debugToScreen(`CANVAS START: ${targetInfo}`);
-
-    console.log('[Canvas] handleDrawStart:', {
-        target: e.target,
-        targetTag: (e.target as HTMLElement)?.tagName,
-        targetId: (e.target as HTMLElement)?.id,
-        isCanvas: e.target === canvas
-    });
-
     // Only prevent default if the event target is the canvas itself
     // This prevents interference with toolbar buttons and other UI elements
     if (e.target === canvas) {
         e.preventDefault();
-        console.log('[Canvas] preventDefault called');
-    } else {
-        debugToScreen(`NOT CANVAS: ${targetInfo}`);
-        console.log('[Canvas] NOT canvas, skipping preventDefault');
     }
 
     // Close settings if open
@@ -510,7 +423,6 @@ function handleDrawStart(e: MouseEvent | TouchEvent) {
         settingsCog.classList.remove('active');
         settingsCog.classList.remove('hide-cog');
         bottomBar.classList.add('collapsed');
-        console.log('[Canvas] Closed settings, exiting');
         return; // Don't start drawing, just close settings
     }
 
@@ -587,79 +499,8 @@ canvas.addEventListener('touchmove', handleDrawMove, { passive: false });
 canvas.addEventListener('touchend', handleDrawEnd, { passive: false });
 canvas.addEventListener('touchcancel', handleDrawEnd, { passive: false });
 
-// Manual fix button for testing
-manualFixButton.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    debugToScreen('=== MANUAL FIX TRIGGERED ===');
-    fixToolbarPositioning();
-});
-
-// Handle resize and orientation changes with debouncing
+// Handle resize with debouncing
 let resizeTimeout: number | undefined;
-
-// Helper function to get safe area inset value
-function getSafeAreaInsetTop(): number {
-    // Create a temporary element to read the CSS env() value
-    const testDiv = document.createElement('div');
-    testDiv.style.position = 'fixed';
-    testDiv.style.top = '0';
-    testDiv.style.paddingTop = 'env(safe-area-inset-top)';
-    testDiv.style.visibility = 'hidden';
-    testDiv.style.pointerEvents = 'none';
-    document.body.appendChild(testDiv);
-
-    const computedPadding = window.getComputedStyle(testDiv).paddingTop;
-    const insetValue = parseFloat(computedPadding) || 0;
-
-    document.body.removeChild(testDiv);
-    return insetValue;
-}
-
-// Helper function to fix toolbar positioning by bypassing CSS media queries
-// Directly set padding via JavaScript to avoid iOS WebKit env() bug
-function fixToolbarPositioning() {
-    const toolbarContainer = document.getElementById('toolbar-container');
-
-    if (!toolbarContainer) {
-        return;
-    }
-
-    debugToScreen(`=== APPLYING JAVASCRIPT PADDING FIX ===`);
-
-    // Get current safe area inset
-    const safeAreaInset = getSafeAreaInsetTop();
-
-    // Determine if we're in landscape mode
-    const isLandscape = window.innerWidth > window.innerHeight && window.innerHeight <= 500;
-
-    // Calculate padding based on orientation (matching CSS media query logic)
-    const basePadding = isLandscape ? 4 : 8; // 0.25rem = 4px, 0.5rem = 8px (assuming 16px base)
-    const totalPadding = basePadding + safeAreaInset;
-
-    // FORCE padding via inline style to override CSS
-    toolbarContainer.style.paddingTop = `${totalPadding}px`;
-
-    // Force layout recalculation
-    toolbarContainer.offsetHeight;
-
-    debugToScreen(
-        `JS Padding: ${totalPadding}px (base: ${basePadding}px + inset: ${safeAreaInset}px) | ` +
-        `Landscape: ${isLandscape}`
-    );
-
-    // Verify positioning after a brief delay
-    setTimeout(() => {
-        const rect = toolbarContainer.getBoundingClientRect();
-        debugToScreen(`Final rect.top: ${rect.top.toFixed(1)}px`);
-
-        if (rect.top > 10) {
-            debugToScreen(`⚠️ STILL OFFSET ${rect.top.toFixed(1)}px`);
-        } else {
-            debugToScreen(`✓ Toolbar positioned correctly`);
-        }
-    }, 50);
-}
 
 window.addEventListener('resize', () => {
     // Clear previous timeout to debounce rapid resize events
@@ -668,18 +509,7 @@ window.addEventListener('resize', () => {
     }
 
     resizeTimeout = window.setTimeout(() => {
-        debugToScreen(`RESIZE START: ${window.innerWidth}x${window.innerHeight}`);
-
-        // Force viewport recalculation
-        document.body.offsetHeight;
-
-        // Resize canvas
         resizeCanvas();
-
-        // Fix toolbar with JavaScript-controlled positioning
-        fixToolbarPositioning();
-
-        debugToScreen(`RESIZE COMPLETE`);
     }, 100); // 100ms debounce
 });
 
@@ -835,9 +665,6 @@ async function run() {
         resizeCanvas();
         animate();
         console.log('Animation started');
-
-        // Fix toolbar positioning on initial load
-        fixToolbarPositioning();
 
         // Initialize audio on startup (muted)
         try {
