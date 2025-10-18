@@ -5,7 +5,8 @@ const config: CapacitorConfig = {
   appName: 'Digital Bloom',
   webDir: 'dist',
   ios: {
-    contentInset: 'automatic',
+    // Remove contentInset to fix safe-area-inset-top not updating on rotation
+    // This was causing the toolbar to stay offset after landscape->portrait rotation
     allowsLinkPreview: false,
     // Enable audio to work in silent mode and background
     webContentsDebuggingEnabled: true

@@ -47,6 +47,9 @@ canvas {
 /* --- Mode Selector Toolbar --- */
 #toolbar-container {
     padding-top: calc(0.5rem + env(safe-area-inset-top));
+    top: 0;
+    position: fixed;
+    will-change: transform; /* Optimize for orientation changes */
 }
 
 #modeSelector::-webkit-scrollbar {
@@ -71,6 +74,7 @@ canvas {
     height: 54px;
     flex-shrink: 0;
     color: rgba(255, 255, 255, 0.6);
+    touch-action: manipulation;
 }
 
 .mode-button .text-label {
@@ -80,6 +84,7 @@ canvas {
     height: 0;
     font-size: 10px;
     font-weight: 600;
+    pointer-events: none; /* Let button receive all touch events */
 }
 
 .mode-button.active {
@@ -103,6 +108,7 @@ canvas {
     width: 22px;
     height: 22px;
     margin-bottom: 2px;
+    pointer-events: none; /* Let button receive all touch events */
 }
 
 .mode-button.active svg {
@@ -230,10 +236,17 @@ canvas {
     opacity: 1;
 }
 
+/* --- Portrait Mode (Explicit) --- */
+@media (orientation: portrait) {
+    #toolbar-container {
+        padding-top: calc(0.5rem + env(safe-area-inset-top)) !important;
+    }
+}
+
 /* --- Landscape Mode Optimizations --- */
 @media (orientation: landscape) and (max-height: 500px) {
     #toolbar-container {
-        padding-top: calc(0.25rem + env(safe-area-inset-top));
+        padding-top: calc(0.25rem + env(safe-area-inset-top)) !important;
     }
 
     .mode-button {
