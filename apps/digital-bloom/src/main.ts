@@ -47,45 +47,34 @@ const bellNotes = ["C3", "D3", "E3", "G3", "A3", "C4", "E4"]; // Pentatonic scal
 
 async function setupAudio() {
     if (audioInitialized) {
-        console.log('[Audio] Already initialized, skipping');
         return;
     }
 
     try {
-        console.log('[Audio] Starting initialization...');
-        console.log('[Audio] Tone.context.state:', Tone.context.state);
-
         // iOS 16.4+: Set web audio session type to 'playback' for silent mode support
         // This is required for WKWebView which has its own separate audio session
         if ('audioSession' in navigator) {
             try {
                 (navigator as any).audioSession.type = 'playback';
-                console.log('[Audio] Set navigator.audioSession.type to "playback" for iOS silent mode');
             } catch (e) {
-                console.log('[Audio] Could not set audioSession.type:', e);
+                // Silent fail - not critical
             }
-        } else {
-            console.log('[Audio] navigator.audioSession not available (pre-iOS 16.4 or not iOS)');
         }
 
         // Create master gain for overall volume control
         masterGain = new Tone.Gain(1.2).toDestination();
-        console.log('[Audio] Master gain created');
 
         // Add limiter to prevent clipping from multiple simultaneous voices
         const limiter = new Tone.Limiter(-1).connect(masterGain);
-        console.log('[Audio] Limiter created');
 
         // Create reverb for ambient space
         reverb = new Tone.Reverb({
             decay: 6,
             preDelay: 0.05
         }).connect(limiter);
-        console.log('[Audio] Reverb created, generating...');
 
         // Wait for reverb to be ready
         await reverb.generate();
-        console.log('[Audio] Reverb generated successfully');
 
         // iOS: Add small delay to ensure reverb is fully ready
         await new Promise(resolve => setTimeout(resolve, 100));
@@ -125,8 +114,6 @@ async function setupAudio() {
         bellSynth.maxPolyphony = 32;  // Allow up to 32 overlapping notes (with 3.5s release at 20 notes/sec)
         bellSynth.volume.value = -6; // Reduced from -3 to account for multiple voices
 
-        console.log('[Audio] All synths created');
-
         // Ambient loop - plays drone and pad notes slowly
         ambientLoop = new Tone.Loop(time => {
             if (ambientDrone && isPlayingSound) {
@@ -144,7 +131,6 @@ async function setupAudio() {
         }, "2n").start(0); // Slower interval for ambient feel
 
         audioInitialized = true;
-        console.log('[Audio] Initialization complete');
 
         // Show success feedback
         showAudioFeedback('🔊 Audio ready', 2000);
@@ -168,13 +154,11 @@ function showAudioFeedback(message: string, duration: number) {
 
 function playChime(y: number) {
     if (!bellSynth) {
-        console.log('[Audio] Bell synth not initialized');
         return;
     }
 
     // iOS: Ensure context is running before playing
     if (Tone.context.state !== 'running') {
-        console.log('[Audio] Context not running, skipping chime');
         return;
     }
 
@@ -296,36 +280,29 @@ muteButton.addEventListener('click', async () => {
         if ('audioSession' in navigator) {
             try {
                 (navigator as any).audioSession.type = 'playback';
-                console.log('[Audio] Set navigator.audioSession.type to "playback" for iOS silent mode');
             } catch (e) {
-                console.log('[Audio] Could not set audioSession.type:', e);
+                // Silent fail - not critical
             }
         }
 
         // iOS: Ensure audio context is started
         if (Tone.context.state !== 'running') {
-            console.log('[Audio] Starting Tone.js context...');
             await Tone.start();
-            console.log('[Audio] Tone.js context started, state:', Tone.context.state);
         }
 
         // iOS: Explicitly resume if suspended
         if (Tone.context.state === 'suspended') {
-            console.log('[Audio] Context suspended, resuming...');
             await Tone.context.resume();
         }
 
         // Initialize audio if not already done
         if (!audioInitialized) {
-            console.log('[Audio] Setting up audio...');
             await setupAudio();
-            console.log('[Audio] Setup complete');
         }
 
         // Toggle sound on/off
         if (isPlayingSound) {
             // Currently playing → stop and mute
-            console.log('[Audio] Stopping sound and muting...');
             isPlayingSound = false;
             isMuted = true;
             updateVolume();
@@ -336,7 +313,6 @@ muteButton.addEventListener('click', async () => {
             muteButton.setAttribute('title', 'Sound Off');
         } else {
             // Currently off → start and unmute
-            console.log('[Audio] Starting sound and unmuting...');
             isPlayingSound = true;
             isMuted = false;
             updateVolume();
@@ -344,14 +320,11 @@ muteButton.addEventListener('click', async () => {
 
             // Play test tone FIRST (must be synchronous with user gesture on iOS)
             if (bellSynth) {
-                console.log('[Audio] Playing test bell tone...');
                 bellSynth.triggerAttackRelease("C4", "0.3n", Tone.now());
-                console.log('[Audio] Test tone triggered');
             }
 
             // Then start transport with explicit timing
             Tone.Transport.start('+0.1');
-            console.log('[Audio] Transport started at', Tone.Transport.state);
 
             muteButton.classList.add('active');
             muteButton.setAttribute('title', 'Sound On');
@@ -369,8 +342,6 @@ function updateVolume() {
     if (padSynth) padSynth.volume.value = -10 + (effectiveVolume * 12);
     if (bellSynth) bellSynth.volume.value = -3 + (effectiveVolume * 6);
     if (masterGain) masterGain.gain.value = isMuted ? 0 : (1.0 + (masterVolume * 0.5));
-
-    console.log('[Audio] Volume updated:', { masterVolume, effectiveVolume, isMuted, gain: masterGain?.gain.value });
 }
 
 function updateMuteButton() {
@@ -640,38 +611,29 @@ function animate() {
 // --- INITIALIZATION ---
 async function run() {
     try {
-        console.log('Initializing Digital Bloom...');
-
         // Initialize PWA features
         initPWA();
 
         // Initialize WASM module
         // Use fetch to load WASM explicitly for iOS/Capacitor compatibility
-        console.log('Loading WASM module...');
         const wasmPath = './assets/digital_bloom_wasm_bg.wasm';
-        console.log('Fetching WASM from:', wasmPath);
         const wasmResponse = await fetch(wasmPath);
         if (!wasmResponse.ok) {
             throw new Error(`Failed to fetch WASM: ${wasmResponse.status} ${wasmResponse.statusText}`);
         }
         const wasmBuffer = await wasmResponse.arrayBuffer();
-        console.log('WASM fetched, size:', wasmBuffer.byteLength, 'bytes');
         await init(wasmBuffer);
-        console.log('WASM loaded successfully');
 
         digitalBloom = new DigitalBloom();
-        console.log('DigitalBloom instance created');
 
         resizeCanvas();
         animate();
-        console.log('Animation started');
 
         // Initialize audio on startup (muted)
         try {
             await setupAudio();
             updateVolume(); // Apply muted state
             updateMuteButton(); // Update icon to show muted
-            console.log('Audio initialized (muted)');
         } catch (error) {
             console.error('Audio initialization failed:', error);
             // Don't block app if audio fails

@@ -23,7 +23,10 @@
     "ios:test": "bash scripts/ios-integration-test.sh",
     "ios:deploy": "bash scripts/build-and-deploy-ios.sh",
     "ios:deploy:device": "bash scripts/build-and-deploy-ios.sh",
-    "ios:logs": "bash scripts/parse-device-logs.sh"
+    "ios:logs": "bash scripts/parse-device-logs.sh",
+    "ios:simulator:setup": "bash scripts/setup-simulator.sh",
+    "ios:simulator:coords": "bash scripts/get-simulator-coords.sh",
+    "ios:simulator:test": "bash scripts/ios-simulator-validation-test.sh"
   },
   "devDependencies": {
     "@capacitor/cli": "^7.4.3",
