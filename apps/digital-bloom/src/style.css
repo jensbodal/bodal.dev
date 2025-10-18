@@ -159,8 +159,8 @@ canvas {
 
 /* --- Settings Cog Button --- */
 #settingsCog {
-    /* Position above bottom bar with comfortable spacing */
-    bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
+    /* Position above bottom bar (which is ~80-100px tall) */
+    bottom: calc(6rem + env(safe-area-inset-bottom, 0px));
     left: 50%;
     transform: translateX(-50%);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -171,11 +171,9 @@ canvas {
     min-height: 44px;
 }
 
-/* Hide settings cog when bottom bar is visible */
+/* Fade settings cog when bottom bar is visible (but keep visible) */
 #settingsCog.hide-cog {
-    opacity: 0;
-    transform: translateX(-50%) translateY(100px);
-    pointer-events: none;
+    opacity: 0.3;
     animation: none;
 }
 
@@ -241,12 +239,20 @@ canvas {
     #toolbar-container {
         padding-top: calc(0.5rem + env(safe-area-inset-top)) !important;
     }
+
+    #settingsCog {
+        bottom: calc(6rem + env(safe-area-inset-bottom, 34px)) !important;
+    }
 }
 
 /* --- Landscape Mode Optimizations --- */
 @media (orientation: landscape) and (max-height: 500px) {
     #toolbar-container {
         padding-top: calc(0.25rem + env(safe-area-inset-top)) !important;
+    }
+
+    #settingsCog {
+        bottom: 4rem !important;
     }
 
     .mode-button {
