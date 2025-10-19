@@ -71,7 +71,7 @@ impl Particle {
         }
     }
 
-    pub fn update(&mut self, width: f64, height: f64) -> bool {
+    pub fn update(&mut self, width: f64, height: f64, total_particles: usize) -> bool {
         if self.mode == "vortex" {
             self.angle += 0.08;
             self.radius -= 0.5;
@@ -96,7 +96,19 @@ impl Particle {
                 }
             }
         }
-        self.life -= self.decay;
+
+        // Dynamic decay: Particles fade faster when there are many of them
+        let load_factor = if total_particles < 200 {
+            1.0  // Normal decay
+        } else if total_particles < 400 {
+            1.0 + (total_particles - 200) as f64 * 0.0025  // 1.0 → 1.5
+        } else if total_particles < 800 {
+            1.5 + (total_particles - 400) as f64 * 0.0025  // 1.5 → 2.5
+        } else {
+            2.5 + ((total_particles - 800) as f64 * 0.00375).min(1.5)  // 2.5 → 4.0 (cap)
+        };
+
+        self.life -= self.decay * load_factor;
         self.life > 0.0 && self.x > -50.0 && self.x < width + 50.0 && self.y > -50.0 && self.y < height + 50.0
     }
 
@@ -248,19 +260,30 @@ impl DigitalBloom {
                 "#ff00ff".to_string(), "#ff8c00".to_string(), "#adff2f".to_string(),
                 "#d8bfd8".to_string(),
             ],
-            max_particles: 500,
+            max_particles: 800, // Increased for high-quality rendering with vine limiting
         }
     }
 
     pub fn update(&mut self, width: f64, height: f64) {
+        // Calculate total particle count for dynamic decay
+        let total_particle_count = self.particles.len() +
+            self.vines.iter().map(|v| v.points.len()).sum::<usize>() +
+            self.lightnings.iter().map(|l| l.segments.len()).sum::<usize>();
+
+        // Update vines with dynamic fade speed
         self.vines.retain_mut(|v| v.update(width, height));
-        self.particles.retain_mut(|p| p.update(width, height));
+
+        // Update particles with dynamic decay based on total load
+        self.particles.retain_mut(|p| p.update(width, height, total_particle_count));
+
+        // Update lightning
         self.lightnings.retain_mut(|l| l.update());
     }
 
     pub fn create_vine(&mut self, x: f64, y: f64, size: f64) {
         let color = self.colors[(random() * self.colors.len() as f64).floor() as usize].clone();
-        self.vines.push(Vine::new(x, y, color, size, 200.0, 50.0));
+        self.vines.push(Vine::new(x, y, color, size, 200.0, 50.0)); // Long, beautiful vines
+        // No hard limits - dynamic decay handles cleanup naturally
     }
 
     pub fn create_particles_gravity(&mut self, x: f64, y: f64, count: usize, size: f64) {
@@ -329,10 +352,8 @@ impl DigitalBloom {
     }
 
     fn limit_particles(&mut self) {
-        if self.particles.len() > self.max_particles {
-            let excess = self.particles.len() - self.max_particles;
-            self.particles.drain(0..excess);
-        }
+        // No hard limits - dynamic decay handles cleanup naturally
+        // Keep this function for API compatibility but make it a no-op
     }
 
     pub fn clear(&mut self) {
@@ -579,7 +600,7 @@ pub extern "C" fn digital_bloom_get_lightning_count(
     }
 }
 
-/// Get particles for rendering (includes regular particles + vine points as particles)
+/// Get ONLY real particles for rendering (excludes vine points and lightning)
 ///
 /// # Safety
 /// - ptr must be a valid pointer returned from digital_bloom_create()
@@ -597,58 +618,140 @@ pub extern "C" fn digital_bloom_get_particles(
 
     unsafe {
         let bloom = &*(ptr as *const DigitalBloom);
-        let mut written = 0;
 
-        // Add regular particles
+        // Return ONLY actual particles (not vine points or lightning segments)
         let particles = bloom.particles_slice();
-        for particle in particles.iter().take(buffer_capacity - written) {
-            *out_buffer.add(written) = particle_to_c(particle);
-            written += 1;
+        let count = particles.len().min(buffer_capacity);
+
+        for (i, particle) in particles.iter().enumerate().take(count) {
+            *out_buffer.add(i) = particle_to_c(particle);
         }
 
-        // Add vine points as particles
+        count
+    }
+}
+
+/// Get vines for path rendering (much more efficient than rendering as particles)
+///
+/// # Safety
+/// - ptr must be a valid pointer returned from digital_bloom_create()
+/// - out_vines must point to an array of at least buffer_capacity CVine elements
+/// - out_points must point to an array large enough to hold all vine points
+/// - Returns the actual number of vines written
+///
+/// # Memory Layout
+/// Each CVine contains a pointer into the out_points array
+#[no_mangle]
+pub extern "C" fn digital_bloom_get_vines(
+    ptr: *const OpaqueDigitalBloom,
+    out_vines: *mut CVine,
+    buffer_capacity: usize,
+    out_points: *mut CPoint,
+    points_capacity: usize
+) -> usize {
+    if ptr.is_null() || out_vines.is_null() || out_points.is_null() {
+        return 0;
+    }
+
+    unsafe {
+        let bloom = &*(ptr as *const DigitalBloom);
         let vines = bloom.vines_slice();
-        for vine in vines.iter() {
+
+        let mut vines_written = 0;
+        let mut points_written = 0;
+
+        for vine in vines.iter().take(buffer_capacity) {
+            // Check if we have space for all points of this vine
+            if points_written + vine.points.len() > points_capacity {
+                break;
+            }
+
             let (r, g, b) = parse_hex_color(&vine.color);
-            for point in vine.points.iter().take((buffer_capacity - written).min(vine.points.len())) {
-                *out_buffer.add(written) = CParticle {
+            let points_start = points_written;
+
+            // Write vine points
+            for point in vine.points.iter() {
+                *out_points.add(points_written) = CPoint {
                     x: point.x,
                     y: point.y,
-                    size: vine.line_width,
-                    life: 1.0,
-                    color_r: r,
-                    color_g: g,
-                    color_b: b,
                 };
-                written += 1;
-                if written >= buffer_capacity {
-                    return written;
-                }
+                points_written += 1;
             }
+
+            // Write vine metadata pointing to its points
+            *out_vines.add(vines_written) = CVine {
+                points_ptr: out_points.add(points_start),
+                points_len: vine.points.len(),
+                color_r: r,
+                color_g: g,
+                color_b: b,
+                line_width: vine.line_width,
+            };
+            vines_written += 1;
         }
 
-        // Add lightning segments as particles
+        vines_written
+    }
+}
+
+/// Get lightning bolts for path rendering
+///
+/// # Safety
+/// - ptr must be a valid pointer returned from digital_bloom_create()
+/// - out_lightning must point to an array of at least buffer_capacity elements
+/// - out_segments must point to an array large enough to hold all segments
+/// - Returns the actual number of lightning bolts written
+#[no_mangle]
+pub extern "C" fn digital_bloom_get_lightning(
+    ptr: *const OpaqueDigitalBloom,
+    out_lightning: *mut CLightning,
+    buffer_capacity: usize,
+    out_segments: *mut CPoint,
+    segments_capacity: usize
+) -> usize {
+    if ptr.is_null() || out_lightning.is_null() || out_segments.is_null() {
+        return 0;
+    }
+
+    unsafe {
+        let bloom = &*(ptr as *const DigitalBloom);
         let lightnings = bloom.lightnings_slice();
-        for lightning in lightnings.iter() {
+
+        let mut lightning_written = 0;
+        let mut segments_written = 0;
+
+        for lightning in lightnings.iter().take(buffer_capacity) {
+            // Check if we have space for all segments
+            if segments_written + lightning.segments.len() > segments_capacity {
+                break;
+            }
+
             let (r, g, b) = parse_hex_color(&lightning.color);
-            for segment in lightning.segments.iter().take((buffer_capacity - written).min(lightning.segments.len())) {
-                *out_buffer.add(written) = CParticle {
+            let segments_start = segments_written;
+
+            // Write lightning segments
+            for segment in lightning.segments.iter() {
+                *out_segments.add(segments_written) = CPoint {
                     x: segment.x,
                     y: segment.y,
-                    size: lightning.line_width * lightning.life,
-                    life: lightning.life,
-                    color_r: r,
-                    color_g: g,
-                    color_b: b,
                 };
-                written += 1;
-                if written >= buffer_capacity {
-                    return written;
-                }
+                segments_written += 1;
             }
+
+            // Write lightning metadata
+            *out_lightning.add(lightning_written) = CLightning {
+                segments_ptr: out_segments.add(segments_start),
+                segments_len: lightning.segments.len(),
+                color_r: r,
+                color_g: g,
+                color_b: b,
+                line_width: lightning.line_width,
+                life: lightning.life,
+            };
+            lightning_written += 1;
         }
 
-        written
+        lightning_written
     }
 }
 

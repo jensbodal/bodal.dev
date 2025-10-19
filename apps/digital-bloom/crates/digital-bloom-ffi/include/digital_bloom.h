@@ -34,6 +34,39 @@ typedef struct CParticle {
 } CParticle;
 
 /**
+ * C-compatible point representation
+ */
+typedef struct CPoint {
+  double x;
+  double y;
+} CPoint;
+
+/**
+ * C-compatible vine representation
+ */
+typedef struct CVine {
+  const struct CPoint *points_ptr;
+  uintptr_t points_len;
+  uint8_t color_r;
+  uint8_t color_g;
+  uint8_t color_b;
+  double line_width;
+} CVine;
+
+/**
+ * C-compatible lightning representation
+ */
+typedef struct CLightning {
+  const struct CPoint *segments_ptr;
+  uintptr_t segments_len;
+  uint8_t color_r;
+  uint8_t color_g;
+  uint8_t color_b;
+  double line_width;
+  double life;
+} CLightning;
+
+/**
  * Create a new DigitalBloom engine
  *
  * Returns an opaque pointer that must be freed with digital_bloom_destroy()
@@ -107,7 +140,7 @@ uintptr_t digital_bloom_get_vine_count(const struct OpaqueDigitalBloom *ptr);
 uintptr_t digital_bloom_get_lightning_count(const struct OpaqueDigitalBloom *ptr);
 
 /**
- * Get particles for rendering (includes regular particles + vine points as particles)
+ * Get ONLY real particles for rendering (excludes vine points and lightning)
  *
  * # Safety
  * - ptr must be a valid pointer returned from digital_bloom_create()
@@ -117,6 +150,39 @@ uintptr_t digital_bloom_get_lightning_count(const struct OpaqueDigitalBloom *ptr
 uintptr_t digital_bloom_get_particles(const struct OpaqueDigitalBloom *ptr,
                                       struct CParticle *out_buffer,
                                       uintptr_t buffer_capacity);
+
+/**
+ * Get vines for path rendering (much more efficient than rendering as particles)
+ *
+ * # Safety
+ * - ptr must be a valid pointer returned from digital_bloom_create()
+ * - out_vines must point to an array of at least buffer_capacity CVine elements
+ * - out_points must point to an array large enough to hold all vine points
+ * - Returns the actual number of vines written
+ *
+ * # Memory Layout
+ * Each CVine contains a pointer into the out_points array
+ */
+uintptr_t digital_bloom_get_vines(const struct OpaqueDigitalBloom *ptr,
+                                  struct CVine *out_vines,
+                                  uintptr_t buffer_capacity,
+                                  struct CPoint *out_points,
+                                  uintptr_t points_capacity);
+
+/**
+ * Get lightning bolts for path rendering
+ *
+ * # Safety
+ * - ptr must be a valid pointer returned from digital_bloom_create()
+ * - out_lightning must point to an array of at least buffer_capacity elements
+ * - out_segments must point to an array large enough to hold all segments
+ * - Returns the actual number of lightning bolts written
+ */
+uintptr_t digital_bloom_get_lightning(const struct OpaqueDigitalBloom *ptr,
+                                      struct CLightning *out_lightning,
+                                      uintptr_t buffer_capacity,
+                                      struct CPoint *out_segments,
+                                      uintptr_t segments_capacity);
 
 /**
  * Clear all particles and reset the simulation
