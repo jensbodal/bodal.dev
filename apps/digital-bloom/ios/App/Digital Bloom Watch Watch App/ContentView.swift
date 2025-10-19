@@ -50,17 +50,17 @@ struct ContentView: View {
                 .padding(8)
                 .allowsHitTesting(false) // Allow touches to pass through to canvas
             }
-            .focusable()
-            .digitalCrownRotation(
-                $viewModel.crownRotation,
-                from: 0.0,
-                through: Double(DigitalBloomEngine.AnimationMode.allCases.count),
-                by: 1.0,
-                sensitivity: .medium,
-                isContinuous: false,
-                isHapticFeedbackEnabled: true
-            )
         }
+        .focusable()
+        .digitalCrownRotation(
+            $viewModel.crownRotation,
+            from: 0.0,
+            through: Double(DigitalBloomEngine.AnimationMode.allCases.count),
+            by: 1.0,
+            sensitivity: .medium,
+            isContinuous: false,
+            isHapticFeedbackEnabled: true
+        )
         .ignoresSafeArea()
     }
 }

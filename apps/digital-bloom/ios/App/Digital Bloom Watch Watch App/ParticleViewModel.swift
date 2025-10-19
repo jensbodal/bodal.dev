@@ -24,11 +24,16 @@ class ParticleViewModel: ObservableObject {
     private var displayLink: Timer?
     private let targetFPS: Double = 30.0 // Battery-friendly frame rate
 
-    // Drag gesture state
+    // Spatial awareness for vine spawning
+    private var lastSpawnLocation: CGPoint?
     private var lastDragLocation: CGPoint?
     private var lastDragTime: Date = Date()
-    private let minDragDistance: CGFloat = 8.0 // Minimum distance between particle spawns
-    private let dragThrottleInterval: TimeInterval = 0.05 // 50ms between spawns (20 per second)
+
+    // Distance-based spawning: larger distance = visual breathing room
+    // 30 pixels on 200x200 screen = 15% of width (prevents clutter)
+    private var minSpawnDistance: CGFloat {
+        return currentMode == .vine ? 30.0 : 12.0
+    }
 
     init() {
         startAnimationLoop()
@@ -41,32 +46,56 @@ class ParticleViewModel: ObservableObject {
     func handleDrag(at location: CGPoint, in size: CGSize) {
         let now = Date()
 
-        // Throttle based on time
-        guard now.timeIntervalSince(lastDragTime) >= dragThrottleInterval else {
-            return
-        }
+        // Check if this is the first touch (tap or start of drag)
+        let isFirstTouch = lastDragLocation == nil
 
-        // Throttle based on distance
+        // Calculate velocity to detect intentional movement
+        var velocity: CGFloat = 0
         if let lastLocation = lastDragLocation {
             let dx = location.x - lastLocation.x
             let dy = location.y - lastLocation.y
             let distance = sqrt(dx * dx + dy * dy)
-
-            guard distance >= minDragDistance else {
-                return
-            }
+            let timeDelta = now.timeIntervalSince(lastDragTime)
+            velocity = timeDelta > 0 ? CGFloat(distance / timeDelta) : 0
         }
-
-        // Create particles at drag location
-        let particleCount = currentMode == .vine ? 2 : 15 // Fewer particles for vine to prevent lag
-        engine.createParticles(mode: currentMode, at: location, count: particleCount, size: 6.0)
 
         lastDragLocation = location
         lastDragTime = now
+
+        // For first touch (tap), always spawn
+        // For subsequent touches (drag), check velocity and distance
+        if !isFirstTouch {
+            // Require movement for drag spawning
+            if velocity < 50 {
+                return
+            }
+
+            // Distance-based spawning for drags only
+            // This creates natural feeling - fast swipes spawn more, slow movements spawn fewer
+            if let lastSpawn = lastSpawnLocation {
+                let dx = location.x - lastSpawn.x
+                let dy = location.y - lastSpawn.y
+                let distance = sqrt(dx * dx + dy * dy)
+
+                guard distance >= minSpawnDistance else { return }
+            }
+        }
+
+        // For taps (isFirstTouch = true), we spawn immediately with no distance check
+        // This allows unlimited rapid tapping anywhere on screen
+
+        // Create particles at drag location
+        // Vine mode: Just 1 vine per point (spatial awareness prevents clutter)
+        // Other modes: 15 particles per point
+        let particleCount = currentMode == .vine ? 1 : 15
+        engine.createParticles(mode: currentMode, at: location, count: particleCount, size: 6.0)
+
+        lastSpawnLocation = location
     }
 
     func handleDragEnd() {
         lastDragLocation = nil
+        lastSpawnLocation = nil
     }
 
     private func startAnimationLoop() {
@@ -89,11 +118,11 @@ class ParticleViewModel: ObservableObject {
         // Update physics
         engine.update(width: width, height: height)
 
-        // Fetch particles for rendering
-        let newParticles = engine.getParticles(maxParticles: 500)
-        DispatchQueue.main.async {
-            self.particles = newParticles
-            self.particleCount = newParticles.count
-        }
+        // Fetch particles for rendering (reduced to 5000 for better performance)
+        // No async dispatch - we're already on main thread via Timer
+        // Async was causing queue backlog and delayed vine rendering
+        let newParticles = engine.getParticles(maxParticles: 5000)
+        self.particles = newParticles
+        self.particleCount = newParticles.count
     }
 }
