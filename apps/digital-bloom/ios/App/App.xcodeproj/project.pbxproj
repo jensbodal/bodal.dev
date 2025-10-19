@@ -3,12 +3,13 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		2183E0922522E5DB73EE3798 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75C325FA557028FD22259657 /* SceneDelegate.swift */; };
 		2FAD9763203C412B000D30F8 /* config.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2FAD9762203C412B000D30F8 /* config.xml */; };
+		38C2BAD0CE392CAD2103E645 /* DigitalBloomFFI.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 13C1B6BB2988EFEE7A315BC8 /* DigitalBloomFFI.xcframework */; };
 		4EDDFCE416C77E138158B9C9 /* Pods_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97469250AE85D7B9637D298D /* Pods_App.framework */; };
 		50379B232058CBB4000EE86E /* capacitor.config.json in Resources */ = {isa = PBXBuildFile; fileRef = 50379B222058CBB4000EE86E /* capacitor.config.json */; };
 		504EC3081FED79650016851F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504EC3071FED79650016851F /* AppDelegate.swift */; };
@@ -16,11 +17,57 @@
 		504EC30F1FED79650016851F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 504EC30E1FED79650016851F /* Assets.xcassets */; };
 		504EC3121FED79650016851F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC3101FED79650016851F /* LaunchScreen.storyboard */; };
 		50B271D11FEDC1A000F3C39B /* public in Resources */ = {isa = PBXBuildFile; fileRef = 50B271D01FEDC1A000F3C39B /* public */; };
+		694C311175DC56A6730DEF3D /* DigitalBloomFFI.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 13C1B6BB2988EFEE7A315BC8 /* DigitalBloomFFI.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		73389C632EA3FBF1007D6D90 /* Digital Bloom Watch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 73389C432EA3FBF0007D6D90 /* Digital Bloom Watch Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		73D4567F2BF8EEC9CDFD7933 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D4D05F32A10CB4767787D0E2 /* Assets.xcassets */; };
+		B0A770DCA620EDFC84614CE5 /* DigitalBloomEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5064EF21FF13E432C2E6A9E0 /* DigitalBloomEngine.swift */; };
+		C2B313136161C84D93CAF345 /* DigitalBloomEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5064EF21FF13E432C2E6A9E0 /* DigitalBloomEngine.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		73389C502EA3FBF1007D6D90 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 504EC2FC1FED79650016851F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 73389C422EA3FBF0007D6D90;
+			remoteInfo = "Digital Bloom Watch Watch App";
+		};
+		73389C5A2EA3FBF1007D6D90 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 504EC2FC1FED79650016851F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 73389C422EA3FBF0007D6D90;
+			remoteInfo = "Digital Bloom Watch Watch App";
+		};
+		73389C612EA3FBF1007D6D90 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 504EC2FC1FED79650016851F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 73389C422EA3FBF0007D6D90;
+			remoteInfo = "Digital Bloom Watch Watch App";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		73389C642EA3FBF1007D6D90 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				73389C632EA3FBF1007D6D90 /* Digital Bloom Watch Watch App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		084AF0577F60903E904E65DE /* ParticleCanvasView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ParticleCanvasView.swift; path = "Digital Bloom Watch Watch App/ParticleCanvasView.swift"; sourceTree = "<group>"; };
+		13C1B6BB2988EFEE7A315BC8 /* DigitalBloomFFI.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = wrapper.xcframework; name = DigitalBloomFFI.xcframework; path = ../Frameworks/DigitalBloomFFI.xcframework; sourceTree = SOURCE_ROOT; };
 		2E167374704EBB5491396DA2 /* Pods-App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-App.release.xcconfig"; path = "Target Support Files/Pods-App/Pods-App.release.xcconfig"; sourceTree = "<group>"; };
 		2FAD9762203C412B000D30F8 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.xml; sourceTree = "<group>"; };
+		3AE6DA9106124B75CE685705 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = Info.plist; path = "Digital Bloom Watch Watch App/Info.plist"; sourceTree = "<group>"; };
 		50379B222058CBB4000EE86E /* capacitor.config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = capacitor.config.json; sourceTree = "<group>"; };
 		504EC3041FED79650016851F /* App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = App.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		504EC3071FED79650016851F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -28,11 +75,67 @@
 		504EC30E1FED79650016851F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		504EC3111FED79650016851F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		504EC3131FED79650016851F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5064EF21FF13E432C2E6A9E0 /* DigitalBloomEngine.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DigitalBloomEngine.swift; path = ../../DigitalBloomEngine.swift; sourceTree = "<group>"; };
 		50B271D01FEDC1A000F3C39B /* public */ = {isa = PBXFileReference; lastKnownFileType = folder; path = public; sourceTree = "<group>"; };
+		73389C432EA3FBF0007D6D90 /* Digital Bloom Watch Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Digital Bloom Watch Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		73389C4F2EA3FBF1007D6D90 /* Digital Bloom Watch Watch AppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Digital Bloom Watch Watch AppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		73389C592EA3FBF1007D6D90 /* Digital Bloom Watch Watch AppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Digital Bloom Watch Watch AppUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		75C325FA557028FD22259657 /* SceneDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		97469250AE85D7B9637D298D /* Pods_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A147D40684836C2C7DCC83D8 /* ParticleViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ParticleViewModel.swift; path = "Digital Bloom Watch Watch App/ParticleViewModel.swift"; sourceTree = "<group>"; };
+		A1916C9F6E5148A98B1429AB /* ContentView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ContentView.swift; path = "Digital Bloom Watch Watch App/ContentView.swift"; sourceTree = "<group>"; };
+		A54F844F872BCDBCEBD2AB16 /* DigitalBloom-Bridging-Header.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "DigitalBloom-Bridging-Header.h"; path = "Digital Bloom Watch Watch App/DigitalBloom-Bridging-Header.h"; sourceTree = "<group>"; };
 		C22072D8737679B3DE28B732 /* Pods-App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-App.debug.xcconfig"; path = "Target Support Files/Pods-App/Pods-App.debug.xcconfig"; sourceTree = "<group>"; };
+		D4D05F32A10CB4767787D0E2 /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = "Digital Bloom Watch Watch App/Assets.xcassets"; sourceTree = "<group>"; };
+		DC123498C27977E018B7EAEE /* DigitalBloomWatchApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DigitalBloomWatchApp.swift; path = "Digital Bloom Watch Watch App/DigitalBloomWatchApp.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		4832C0373266A9E7F0C757D2 /* Exceptions for "Digital Bloom Watch Watch App" folder in "Digital Bloom Watch Watch App" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 73389C422EA3FBF0007D6D90 /* Digital Bloom Watch Watch App */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		73389C442EA3FBF0007D6D90 /* Digital Bloom Watch Watch App */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				4832C0373266A9E7F0C757D2 /* Exceptions for "Digital Bloom Watch Watch App" folder in "Digital Bloom Watch Watch App" target */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = "Digital Bloom Watch Watch App";
+			sourceTree = "<group>";
+		};
+		73389C522EA3FBF1007D6D90 /* Digital Bloom Watch Watch AppTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = "Digital Bloom Watch Watch AppTests";
+			sourceTree = "<group>";
+		};
+		73389C5C2EA3FBF1007D6D90 /* Digital Bloom Watch Watch AppUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = "Digital Bloom Watch Watch AppUITests";
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		504EC3011FED79650016851F /* Frameworks */ = {
@@ -40,6 +143,29 @@
 			buildActionMask = 2147483647;
 			files = (
 				4EDDFCE416C77E138158B9C9 /* Pods_App.framework in Frameworks */,
+				38C2BAD0CE392CAD2103E645 /* DigitalBloomFFI.xcframework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		73389C402EA3FBF0007D6D90 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				694C311175DC56A6730DEF3D /* DigitalBloomFFI.xcframework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		73389C4C2EA3FBF1007D6D90 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		73389C562EA3FBF1007D6D90 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -50,9 +176,13 @@
 			isa = PBXGroup;
 			children = (
 				504EC3061FED79650016851F /* App */,
+				73389C522EA3FBF1007D6D90 /* Digital Bloom Watch Watch AppTests */,
+				73389C5C2EA3FBF1007D6D90 /* Digital Bloom Watch Watch AppUITests */,
 				504EC3051FED79650016851F /* Products */,
 				6E26A346F8D4E74119E94D0F /* Pods */,
 				AAF1E7374EEE8ED94DEEA346 /* Frameworks */,
+				ECF89EA4CD679A3C052A60A1 /* Digital Bloom Watch Watch App */,
+				7BF37E7EC30CF400B79812A4 /* Digital Bloom Watch Watch App */,
 			);
 			sourceTree = "<group>";
 		};
@@ -60,6 +190,9 @@
 			isa = PBXGroup;
 			children = (
 				504EC3041FED79650016851F /* App.app */,
+				73389C432EA3FBF0007D6D90 /* Digital Bloom Watch Watch App.app */,
+				73389C4F2EA3FBF1007D6D90 /* Digital Bloom Watch Watch AppTests.xctest */,
+				73389C592EA3FBF1007D6D90 /* Digital Bloom Watch Watch AppUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -76,6 +209,7 @@
 				2FAD9762203C412B000D30F8 /* config.xml */,
 				50B271D01FEDC1A000F3C39B /* public */,
 				75C325FA557028FD22259657 /* SceneDelegate.swift */,
+				5064EF21FF13E432C2E6A9E0 /* DigitalBloomEngine.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -89,12 +223,44 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		7BF37E7EC30CF400B79812A4 /* Digital Bloom Watch Watch App */ = {
+			isa = PBXGroup;
+			children = (
+				3AE6DA9106124B75CE685705 /* Info.plist */,
+				A9043618D76FDE1D7832ECAE /* Assets.xcassets */,
+				D4D05F32A10CB4767787D0E2 /* Assets.xcassets */,
+			);
+			name = "Digital Bloom Watch Watch App";
+			path = "Digital Bloom Watch Watch App";
+			sourceTree = "<group>";
+		};
+		A9043618D76FDE1D7832ECAE /* Assets.xcassets */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Assets.xcassets;
+			path = "Digital Bloom Watch Watch App/Assets.xcassets";
+			sourceTree = "<group>";
+		};
 		AAF1E7374EEE8ED94DEEA346 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				97469250AE85D7B9637D298D /* Pods_App.framework */,
+				13C1B6BB2988EFEE7A315BC8 /* DigitalBloomFFI.xcframework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		ECF89EA4CD679A3C052A60A1 /* Digital Bloom Watch Watch App */ = {
+			isa = PBXGroup;
+			children = (
+				DC123498C27977E018B7EAEE /* DigitalBloomWatchApp.swift */,
+				A1916C9F6E5148A98B1429AB /* ContentView.swift */,
+				A147D40684836C2C7DCC83D8 /* ParticleViewModel.swift */,
+				084AF0577F60903E904E65DE /* ParticleCanvasView.swift */,
+				A54F844F872BCDBCEBD2AB16 /* DigitalBloom-Bridging-Header.h */,
+			);
+			path = "Digital Bloom Watch Watch App";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -109,15 +275,79 @@
 				504EC3011FED79650016851F /* Frameworks */,
 				504EC3021FED79650016851F /* Resources */,
 				BF43D4EA0F0AB39D0B26CAA6 /* [CP] Embed Pods Frameworks */,
+				73389C642EA3FBF1007D6D90 /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				73389C622EA3FBF1007D6D90 /* PBXTargetDependency */,
 			);
 			name = App;
 			productName = App;
 			productReference = 504EC3041FED79650016851F /* App.app */;
 			productType = "com.apple.product-type.application";
+		};
+		73389C422EA3FBF0007D6D90 /* Digital Bloom Watch Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 73389C6B2EA3FBF1007D6D90 /* Build configuration list for PBXNativeTarget "Digital Bloom Watch Watch App" */;
+			buildPhases = (
+				73389C3F2EA3FBF0007D6D90 /* Sources */,
+				73389C402EA3FBF0007D6D90 /* Frameworks */,
+				73389C412EA3FBF0007D6D90 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				73389C442EA3FBF0007D6D90 /* Digital Bloom Watch Watch App */,
+			);
+			name = "Digital Bloom Watch Watch App";
+			productName = "Digital Bloom Watch Watch App";
+			productReference = 73389C432EA3FBF0007D6D90 /* Digital Bloom Watch Watch App.app */;
+			productType = "com.apple.product-type.application";
+		};
+		73389C4E2EA3FBF1007D6D90 /* Digital Bloom Watch Watch AppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 73389C6C2EA3FBF1007D6D90 /* Build configuration list for PBXNativeTarget "Digital Bloom Watch Watch AppTests" */;
+			buildPhases = (
+				73389C4B2EA3FBF1007D6D90 /* Sources */,
+				73389C4C2EA3FBF1007D6D90 /* Frameworks */,
+				73389C4D2EA3FBF1007D6D90 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				73389C512EA3FBF1007D6D90 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				73389C522EA3FBF1007D6D90 /* Digital Bloom Watch Watch AppTests */,
+			);
+			name = "Digital Bloom Watch Watch AppTests";
+			productName = "Digital Bloom Watch Watch AppTests";
+			productReference = 73389C4F2EA3FBF1007D6D90 /* Digital Bloom Watch Watch AppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		73389C582EA3FBF1007D6D90 /* Digital Bloom Watch Watch AppUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 73389C6D2EA3FBF1007D6D90 /* Build configuration list for PBXNativeTarget "Digital Bloom Watch Watch AppUITests" */;
+			buildPhases = (
+				73389C552EA3FBF1007D6D90 /* Sources */,
+				73389C562EA3FBF1007D6D90 /* Frameworks */,
+				73389C572EA3FBF1007D6D90 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				73389C5B2EA3FBF1007D6D90 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				73389C5C2EA3FBF1007D6D90 /* Digital Bloom Watch Watch AppUITests */,
+			);
+			name = "Digital Bloom Watch Watch AppUITests";
+			productName = "Digital Bloom Watch Watch AppUITests";
+			productReference = 73389C592EA3FBF1007D6D90 /* Digital Bloom Watch Watch AppUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
 
@@ -126,13 +356,24 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastSwiftUpdateCheck = 0920;
+				LastSwiftUpdateCheck = 2600;
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					504EC3031FED79650016851F = {
 						CreatedOnToolsVersion = 9.2;
 						LastSwiftMigration = 1100;
 						ProvisioningStyle = Automatic;
+					};
+					73389C422EA3FBF0007D6D90 = {
+						CreatedOnToolsVersion = 26.0.1;
+					};
+					73389C4E2EA3FBF1007D6D90 = {
+						CreatedOnToolsVersion = 26.0.1;
+						TestTargetID = 73389C422EA3FBF0007D6D90;
+					};
+					73389C582EA3FBF1007D6D90 = {
+						CreatedOnToolsVersion = 26.0.1;
+						TestTargetID = 73389C422EA3FBF0007D6D90;
 					};
 				};
 			};
@@ -150,6 +391,9 @@
 			projectRoot = "";
 			targets = (
 				504EC3031FED79650016851F /* App */,
+				73389C422EA3FBF0007D6D90 /* Digital Bloom Watch Watch App */,
+				73389C4E2EA3FBF1007D6D90 /* Digital Bloom Watch Watch AppTests */,
+				73389C582EA3FBF1007D6D90 /* Digital Bloom Watch Watch AppUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -165,6 +409,28 @@
 				50379B232058CBB4000EE86E /* capacitor.config.json in Resources */,
 				504EC30D1FED79650016851F /* Main.storyboard in Resources */,
 				2FAD9763203C412B000D30F8 /* config.xml in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		73389C412EA3FBF0007D6D90 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				73D4567F2BF8EEC9CDFD7933 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		73389C4D2EA3FBF1007D6D90 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		73389C572EA3FBF1007D6D90 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -217,10 +483,51 @@
 			files = (
 				504EC3081FED79650016851F /* AppDelegate.swift in Sources */,
 				2183E0922522E5DB73EE3798 /* SceneDelegate.swift in Sources */,
+				C2B313136161C84D93CAF345 /* DigitalBloomEngine.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		73389C3F2EA3FBF0007D6D90 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B0A770DCA620EDFC84614CE5 /* DigitalBloomEngine.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		73389C4B2EA3FBF1007D6D90 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		73389C552EA3FBF1007D6D90 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		73389C512EA3FBF1007D6D90 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 73389C422EA3FBF0007D6D90 /* Digital Bloom Watch Watch App */;
+			targetProxy = 73389C502EA3FBF1007D6D90 /* PBXContainerItemProxy */;
+		};
+		73389C5B2EA3FBF1007D6D90 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 73389C422EA3FBF0007D6D90 /* Digital Bloom Watch Watch App */;
+			targetProxy = 73389C5A2EA3FBF1007D6D90 /* PBXContainerItemProxy */;
+		};
+		73389C622EA3FBF1007D6D90 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 73389C422EA3FBF0007D6D90 /* Digital Bloom Watch Watch App */;
+			targetProxy = 73389C612EA3FBF1007D6D90 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		504EC30B1FED79650016851F /* Main.storyboard */ = {
@@ -368,18 +675,35 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 5;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/../Frameworks",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/../Frameworks/DigitalBloomFFI.xcframework/ios-arm64/Headers",
+				);
 				INFOPLIST_FILE = App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/../Frameworks/DigitalBloomFFI.xcframework/ios-arm64",
+				);
+				MARKETING_VERSION = 1.0.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ldigital_bloom_ffi",
+				);
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-DDEBUG\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.breakevenllc.digitalbloom;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/App/DigitalBloom-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -391,19 +715,266 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 5;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/../Frameworks",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/../Frameworks/DigitalBloomFFI.xcframework/ios-arm64/Headers",
+				);
 				INFOPLIST_FILE = App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/../Frameworks/DigitalBloomFFI.xcframework/ios-arm64",
+				);
+				MARKETING_VERSION = 1.0.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ldigital_bloom_ffi",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.breakevenllc.digitalbloom;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/App/DigitalBloom-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		73389C652EA3FBF1007D6D90 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 5;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/../Frameworks",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/../Frameworks/DigitalBloomFFI.xcframework/watchos-arm64_arm64_32/Headers",
+				);
+				INFOPLIST_FILE = "Digital Bloom Watch Watch App/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Digital Bloom Watch";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.breakevenllc.digitalbloom;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				OTHER_LDFLAGS = (
+					"-ldigital_bloom_ffi_device",
+					"-L$(PROJECT_DIR)/../Frameworks/DigitalBloomFFI.xcframework/watchos-arm64_arm64_32",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.breakevenllc.digitalbloom.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Digital Bloom Watch Watch App/DigitalBloom-Bridging-Header.h";
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 9.0;
+			};
+			name = Debug;
+		};
+		73389C662EA3FBF1007D6D90 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 5;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/../Frameworks",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/../Frameworks/DigitalBloomFFI.xcframework/watchos-arm64_arm64_32/Headers",
+				);
+				INFOPLIST_FILE = "Digital Bloom Watch Watch App/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Digital Bloom Watch";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.breakevenllc.digitalbloom;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0.0;
+				MTL_FAST_MATH = YES;
+				OTHER_LDFLAGS = (
+					"-ldigital_bloom_ffi_device",
+					"-L$(PROJECT_DIR)/../Frameworks/DigitalBloomFFI.xcframework/watchos-arm64_arm64_32",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.breakevenllc.digitalbloom.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Digital Bloom Watch Watch App/DigitalBloom-Bridging-Header.h";
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 9.0;
+			};
+			name = Release;
+		};
+		73389C672EA3FBF1007D6D90 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 5;
+				DEVELOPMENT_TEAM = 4FC33FDUJX;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.breakevenllc.Digital-Bloom-Watch-Watch-AppTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Digital Bloom Watch Watch App.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Digital Bloom Watch Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Debug;
+		};
+		73389C682EA3FBF1007D6D90 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 5;
+				DEVELOPMENT_TEAM = 4FC33FDUJX;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.breakevenllc.Digital-Bloom-Watch-Watch-AppTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Digital Bloom Watch Watch App.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Digital Bloom Watch Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Release;
+		};
+		73389C692EA3FBF1007D6D90 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 5;
+				DEVELOPMENT_TEAM = 4FC33FDUJX;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.breakevenllc.Digital-Bloom-Watch-Watch-AppUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_TARGET_NAME = "Digital Bloom Watch Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Debug;
+		};
+		73389C6A2EA3FBF1007D6D90 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 5;
+				DEVELOPMENT_TEAM = 4FC33FDUJX;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.breakevenllc.Digital-Bloom-Watch-Watch-AppUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_TARGET_NAME = "Digital Bloom Watch Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 26.0;
 			};
 			name = Release;
 		};
@@ -424,6 +995,33 @@
 			buildConfigurations = (
 				504EC3171FED79650016851F /* Debug */,
 				504EC3181FED79650016851F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		73389C6B2EA3FBF1007D6D90 /* Build configuration list for PBXNativeTarget "Digital Bloom Watch Watch App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				73389C652EA3FBF1007D6D90 /* Debug */,
+				73389C662EA3FBF1007D6D90 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		73389C6C2EA3FBF1007D6D90 /* Build configuration list for PBXNativeTarget "Digital Bloom Watch Watch AppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				73389C672EA3FBF1007D6D90 /* Debug */,
+				73389C682EA3FBF1007D6D90 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		73389C6D2EA3FBF1007D6D90 /* Build configuration list for PBXNativeTarget "Digital Bloom Watch Watch AppUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				73389C692EA3FBF1007D6D90 /* Debug */,
+				73389C6A2EA3FBF1007D6D90 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

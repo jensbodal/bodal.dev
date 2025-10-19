@@ -75,6 +75,13 @@ impl Particle {
         }
     }
 
+    // FFI-friendly getter methods
+    pub fn x(&self) -> f64 { self.x }
+    pub fn y(&self) -> f64 { self.y }
+    pub fn size(&self) -> f64 { self.size }
+    pub fn life(&self) -> f64 { self.life }
+    pub fn color(&self) -> &str { &self.color }
+
     pub fn new_vortex(x: f64, y: f64, origin_x: f64, origin_y: f64, angle: f64, radius: f64, color: String, size: f64) -> Self {
         let vx = angle.cos() * 2.0;
         let vy = angle.sin() * 2.0;
@@ -553,5 +560,18 @@ impl DigitalBloom {
         self.grown_vines.clear();
         self.particles.clear();
         self.lightnings.clear();
+    }
+
+    // FFI-friendly getter methods
+    pub fn particles_slice(&self) -> &[Particle] {
+        &self.particles
+    }
+
+    pub fn particles_len(&self) -> usize {
+        self.particles.len()
+    }
+
+    pub fn set_max_particles(&mut self, max: usize) {
+        self.max_particles = max;
     }
 }

@@ -1,7 +1,7 @@
 {
   "name": "digital-bloom",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -26,7 +26,16 @@
     "ios:logs": "bash scripts/parse-device-logs.sh",
     "ios:simulator:setup": "bash scripts/setup-simulator.sh",
     "ios:simulator:coords": "bash scripts/get-simulator-coords.sh",
-    "ios:simulator:test": "bash scripts/ios-simulator-validation-test.sh"
+    "ios:simulator:test": "bash scripts/ios-simulator-validation-test.sh",
+    "watchos:build": "bash scripts/build-watchos.sh",
+    "watchos:clean": "cd crates/digital-bloom-ffi && cargo clean && rm -rf build/",
+    "watchos:rebuild": "bun run watchos:clean && bun run watchos:build",
+    "watchos:deploy": "bash scripts/watchos-simulator-deploy.sh",
+    "watchos:deploy:ultra": "bash scripts/watchos-simulator-deploy.sh 'Apple Watch Ultra 2 (49mm)'",
+    "watchos:deploy:se": "bash scripts/watchos-simulator-deploy.sh 'Apple Watch SE (44mm) (2nd generation)'",
+    "deploy:device": "bash scripts/deploy-to-device.sh",
+    "deploy:iphone": "bash scripts/deploy-to-device.sh name=zojak-16m",
+    "deploy:watch": "bash scripts/deploy-to-device.sh '' name=baw_9"
   },
   "devDependencies": {
     "@capacitor/cli": "^7.4.3",

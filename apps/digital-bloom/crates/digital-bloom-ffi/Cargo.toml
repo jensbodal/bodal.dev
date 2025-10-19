@@ -1,0 +1,22 @@
+[package]
+name = "digital-bloom-ffi"
+version = "1.0.0"
+edition = "2021"
+
+[lib]
+# Build as static library for watchOS linking
+crate-type = ["staticlib"]
+
+[dependencies]
+# No external dependencies - reusing physics code from WASM crate
+
+[build-dependencies]
+cbindgen = "0.29"
+
+[profile.release]
+# Optimize for size on watchOS (battery + storage constraints)
+opt-level = "z"          # Optimize for size
+lto = true               # Link-time optimization
+codegen-units = 1        # Single codegen unit for best optimization
+panic = "abort"          # Smaller binary, no unwinding
+strip = true             # Strip debug symbols
