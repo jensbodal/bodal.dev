@@ -111,7 +111,7 @@ async function setupAudio() {
                 release: 3.5
             }
         }).connect(reverb);
-        bellSynth.maxPolyphony = 32;  // Allow up to 32 overlapping notes (with 3.5s release at 20 notes/sec)
+        bellSynth.maxPolyphony = 64;  // Allow up to 64 overlapping notes (with 3.5s release at 20 notes/sec)
         bellSynth.volume.value = -6; // Reduced from -3 to account for multiple voices
 
         // Ambient loop - plays drone and pad notes slowly

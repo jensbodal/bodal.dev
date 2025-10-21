@@ -115,6 +115,42 @@ canvas {
     margin-bottom: 4px;
 }
 
+@media (max-width: 420px) {
+    .mode-button {
+        width: 48px;
+        height: 48px;
+    }
+
+    .mode-button.active {
+        width: 58px;
+    }
+
+    .mode-button svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .mode-button .text-label {
+        font-size: 9px;
+    }
+}
+
+@media (max-width: 360px) {
+    .mode-button {
+        width: 42px;
+        height: 42px;
+    }
+
+    .mode-button.active {
+        width: 52px;
+    }
+
+    .mode-button svg {
+        width: 18px;
+        height: 18px;
+    }
+}
+
 /* --- Bottom Control Bar --- */
 #bottomBar {
     background: rgba(10, 10, 10, 0.85);
