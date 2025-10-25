@@ -52,6 +52,7 @@
     "vitest": "^2.1.8"
   },
   "dependencies": {
+    "@jofr/capacitor-media-session": "^4.0.0",
     "tone": "^15.1.22"
   }
 }

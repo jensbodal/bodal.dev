@@ -84,6 +84,41 @@ Each mode has a dedicated WASM method:
 - Zen mode: automatic note triggering via Tone.Loop (quarter notes)
 - Haptic feedback via `navigator.vibrate()` for mobile devices
 
+### MediaSession Integration
+
+**Purpose**: Replaces "localhost" with custom metadata in iOS media controls (Lock Screen, Control Center, and AirPods display).
+
+**Implementation**: `src/mediaSession.ts`
+
+**Key Features**:
+- Custom metadata: Title, artist, album, artwork
+- Platform detection: Uses Capacitor plugin on iOS, falls back to Web MediaSession API on web
+- Playback state management: Automatically updates playing/paused state
+- Lock screen controls support
+
+**Integration with Audio System**:
+- Initialized when audio context starts (in `main.ts`)
+- Auto-updates playback state when Tone.js synth starts/stops
+- Metadata is customizable via the `updateMetadata()` method
+
+**Customization**:
+```typescript
+import { mediaSession } from './mediaSession';
+
+// Update metadata
+mediaSession.updateMetadata({
+  title: 'Custom Title',
+  artist: 'Custom Artist',
+  album: 'Custom Album',
+  artwork: [{ src: '/path/to/artwork.png', sizes: '512x512' }]
+});
+
+// Update playback state
+mediaSession.setPlaybackState('playing');
+```
+
+**Dependencies**: `@jofr/capacitor-media-session` (iOS native plugin)
+
 ## Code Style Notes
 
 - TypeScript interfaces match Rust struct serialization format

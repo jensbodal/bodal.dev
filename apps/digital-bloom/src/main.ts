@@ -1,6 +1,7 @@
 import init, { DigitalBloom } from 'digital-bloom-wasm';
 import * as Tone from 'tone';
 import { initPWA } from './pwa/manifest';
+import { mediaSession } from './mediaSession';
 
 // --- TYPE DEFINITIONS ---
 type PhysicsMode = 'vine' | 'gravity' | 'bounce' | 'burst' | 'lightning' | 'constellation' | 'vortex';
@@ -131,6 +132,14 @@ async function setupAudio() {
         }, "2n").start(0); // Slower interval for ambient feel
 
         audioInitialized = true;
+
+        // Initialize media session for iOS controls
+        try {
+            await mediaSession.initialize();
+        } catch (error) {
+            console.error('[Audio] MediaSession initialization failed:', error);
+            // Don't block audio if media session fails
+        }
 
         // Show success feedback
         showAudioFeedback('🔊 Audio ready', 2000);
@@ -311,6 +320,9 @@ muteButton.addEventListener('click', async () => {
             Tone.Transport.pause();
             muteButton.classList.remove('active');
             muteButton.setAttribute('title', 'Sound Off');
+
+            // Update media session state
+            await mediaSession.pausePlayback();
         } else {
             // Currently off → start and unmute
             isPlayingSound = true;
@@ -328,6 +340,9 @@ muteButton.addEventListener('click', async () => {
 
             muteButton.classList.add('active');
             muteButton.setAttribute('title', 'Sound On');
+
+            // Update media session state
+            await mediaSession.startPlayback();
         }
     } catch (error) {
         console.error('[Audio] Error in mute button handler:', error);
@@ -607,6 +622,24 @@ function animate() {
 
     requestAnimationFrame(animate);
 }
+
+// --- MEDIA SESSION EVENT HANDLERS ---
+// Listen for media session play/pause events from lock screen controls
+window.addEventListener('mediasession:play', async () => {
+    console.log('[MediaSession] Play event received from lock screen');
+    if (!isPlayingSound && audioInitialized) {
+        // Simulate mute button click to start playback
+        muteButton.click();
+    }
+});
+
+window.addEventListener('mediasession:pause', async () => {
+    console.log('[MediaSession] Pause event received from lock screen');
+    if (isPlayingSound) {
+        // Simulate mute button click to pause playback
+        muteButton.click();
+    }
+});
 
 // --- INITIALIZATION ---
 async function run() {
