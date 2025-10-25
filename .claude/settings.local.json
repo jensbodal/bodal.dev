@@ -6,7 +6,10 @@
       "Read(//Users/jensbodal/git/neon-canvas/gemini/**)",
       "Bash(bun run:*)",
       "Bash(cat:*)",
-      "Bash(gh run view:*)"
+      "Bash(gh run view:*)",
+      "Bash(bunx cap sync:*)",
+      "Bash(bunx cap run ios:*)",
+      "Bash(xcrun simctl:*)"
     ],
     "deny": []
   }
