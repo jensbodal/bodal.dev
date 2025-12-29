@@ -562,11 +562,6 @@ impl DigitalBloom {
         self.lightnings.clear();
     }
 
-    // FFI-friendly getter methods
-    pub fn particles_slice(&self) -> &[Particle] {
-        &self.particles
-    }
-
     pub fn particles_len(&self) -> usize {
         self.particles.len()
     }
